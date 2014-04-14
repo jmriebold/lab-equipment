@@ -104,3 +104,5 @@ STATICFILES_DIRS = (
 MEDIA_ROOT = '/home/claire/Documents/Work/lab-equipment/media/'
 
 MEDIA_URL = '/media/'
+
+IMAGE_MAX_WIDTH = 200

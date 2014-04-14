@@ -4,12 +4,19 @@
 
 {% block primary %}
 
-{% if equip %}
-    {% for each_equip in equip %}
-        <a href="{% url 'equip_detail' each_equip.category each_equip.name %}">{{ each_equip.name }}</a>
-        <p>
-    {% endfor %}
-{% else %}
-    <p>No equipment is available.</p>
-{% endif %}
+{% for category,equip_list in equip.items %}
+    <p>
+    <b>{{ category.1 }}</b>
+    </p>
+    {% if equip_list %}
+        {% for each_equip in equip_list %} 
+            <blockquote>
+            <a href="{% url 'equip_detail' each_equip.get_category_display|slugify each_equip.slug %}">{{ each_equip.name }}</a> {{ each_equip.manufacturer }} {{ each_equip.model }} ({{ each_equip.get_lab_display }})
+            </blockquote>
+        {% endfor %}
+    {% else %}
+        <blockquote>No equipment is available.</blockquote>
+    {% endif %}
+{% endfor %}
+
 {% endblock %}

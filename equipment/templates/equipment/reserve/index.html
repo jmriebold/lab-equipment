@@ -3,22 +3,28 @@
 {% block title %}Reserve Lab Equipment{% endblock %}
 
 {% block primary %}
+<script language="JavaScript">
+function AccessDates(){
+    var StartDate = document.getElementById('startDate').value;
+    var EndDate = document.getElementById('endDate').value;
+    // var url_mask = "http://www.google.com";
+    var url_mask = "{% url 'reserve_dates' start_date=12345 end_date=23456 %}".replace(/12345/, StartDate.toString()).replace(/23456/, EndDate.toString());
+    window.location.href=url_mask;
+}
+</script>
 
 <center>
-<!--<b>When will you be using the equipment?</b>
--->
 <p>
-<b>Where will you be using the equipment?</b>
+<b>When will you be using the equipment?</b>
 <p>
-<form>
-    <input type="button" value="Lab" onClick="parent.location='reserve/lab'">
-</form>
+<!-- <input id="value" type="text" value="testing" />
+<button id="submit" onclick="AccessDates()">Submit</button>
+<p> -->
+Start Date: <input type="date" id="startDate">
+<br>
+End Date: <input type="date" id="endDate">
+<br>
+<button id="submit" onclick="AccessDates()">Submit</button>
 </p>
-<p>
-OR
-</p>
-<form>
-    <input type="button" value="Field" onClick="parent.location='reserve/field'">
-</form>
 
 {% endblock %}
