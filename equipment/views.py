@@ -34,12 +34,21 @@ def reserve(request):
     return render(request, 'equipment/reserve/index.html')
 
 def reserve_dates(request,start_date,end_date):
-    equipment = Equipment.objects.all().order_by('category')
+    # find any conflicting reservations
     year,month,day = [int(x) for x in start_date.split('-')]
     start_date = datetime.date(year,month,day)
     year,month,day = [int(x) for x in end_date.split('-')]
     end_date = datetime.date(year,month,day)
-    overlapping_reservations = Reservation.objects.filter(end_date__lte(end_date), end_date__gte(start_date))
-    context = {'equipment': equipment, 'overlapping_reservations':overlapping_reservations, 'start_date':start_date, 'end_date':end_date}
+    conflicting_reservations = Reservation.objects.filter(end_date__gt=start_date,start_date__lt=end_date)
+
+    # any equipment reserved in a conflicting reservation is unavailable for this one
+    unavailable_equipment = set()
+    for reservation in conflicting_reservations:
+        for equipment in reservation.equipment.all():
+            unavailable_equipment.add(equipment.id)
+
+    equipment = Equipment.objects.exclude(id__in=unavailable_equipment)
+
+    context = {'equipment': equipment}
     return render(request, 'equipment/reserve/reserve_dates.html',context)
 

@@ -159,7 +159,7 @@ class Reservation(models.Model):
     equipment = models.ManyToManyField(Equipment) # what's being reserved, can be multiple items
     reserved_by = models.ForeignKey(User) # who's reserving it
     purpose = models.CharField(max_length=500) # what's the purpose and where they're taking it
-    course = models.CharField(max_length=20) # optional, if it's being used for a course, which course
+    course = models.CharField(max_length=20,blank=True) # optional, if it's being used for a course, which course
     start_date = models.DateTimeField() # when the equipment is checked out
     end_date = models.DateTimeField() # when the equipment will be returned
 
