@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}Equipment Detail{% endblock %}
+
+{% block primary %}
+
+{% if equip %}
+    {% for each_equip in equip %}
+        <table>
+            <tr><td colspan="3" align=center><b>{{ each_equip.name }}</b></td></tr>
+        <tr><td rowspan="10"><img src="{{ each_equip.image.url }}"</td></tr>
+            <tr><td><b>Lab</b></td><td>{{ each_equip.get_lab_display }}</td></tr>
+            <tr><td><b>Use</b></td><td>{{ each_equip.get_lab_or_field_display }}</td></tr>
+            <tr><td><b>Category</b></td><td>{{ each_equip.get_category_display }}</td></tr>
+            <tr><td><b>Manufacturer</b></td><td>{{ each_equip.manufacturer }}</td></tr>
+            <tr><td><b>Model</b></td><td>{{ each_equip.equip_model }}</td></tr>
+            <tr><td><b>Location</b></td><td>{{ each_equip.get_location_display }}</td></tr>
+            <tr><td><b>Reservable?</b></td><td>{{ each_equip.reservable }}</td></tr>
+            <tr><td><b>Max Reservation Length</b></td><td>{{ each_equip.max_reservation_length }} hours</td></tr>
+            <tr><td><b>Privilege Level for Reservation</b></td><td>{{ each_equip.get_privilege_level_display }}</td></tr>
+        </table>
+        <p>
+    {% endfor %}
+{% else %}
+    <p>No equipment is available.</p>
+{% endif %}
+
+{% endblock %}

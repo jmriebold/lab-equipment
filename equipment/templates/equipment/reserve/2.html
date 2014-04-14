@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Reserve Equipment{% endblock %}
+
+{% block primary %}
+
+{% if equipment %}
+    {% for equip in equipment %}
+        <a href="/equipment/{{ equip.name }}/">{{ equip.name }}</a>
+        <p>
+    {% endfor %}
+{% else %}
+    <p>No equipment is available.</p>
+{% endif %}
+{% endblock %}

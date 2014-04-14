@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Reserve Lab Equipment{% endblock %}
+
+{% block primary %}
+
+<center>
+<!--<b>When will you be using the equipment?</b>
+-->
+<p>
+<b>Where will you be using the equipment?</b>
+<p>
+<form>
+    <input type="button" value="Lab" onClick="parent.location='reserve/lab'">
+</form>
+</p>
+<p>
+OR
+</p>
+<form>
+    <input type="button" value="Field" onClick="parent.location='reserve/field'">
+</form>
+
+{% endblock %}

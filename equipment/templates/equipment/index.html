@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Lab Equipment Reservations{% endblock %}
+
+{% block primary %}
+<p>
+To make an equipment reservation, go <a href="{% url 'reserve' %}">here</a>.
+</p>
+<p>
+To view current reservations, go <a href="{% url 'current_reservations' %}">here</a>.
+</p>
+<p>
+For a listing of all lab equipment, go <a href="{% url 'all_equipment' %}">here</a>.
+</p>
+{% endblock %}

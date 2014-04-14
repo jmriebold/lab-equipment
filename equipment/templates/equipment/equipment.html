@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Equipment{% endblock %}
+
+{% block primary %}
+
+{% if equip %}
+    {% for each_equip in equip %}
+        <a href="{% url 'equip_detail' each_equip.category each_equip.name %}">{{ each_equip.name }}</a>
+        <p>
+    {% endfor %}
+{% else %}
+    <p>No equipment is available.</p>
+{% endif %}
+{% endblock %}
