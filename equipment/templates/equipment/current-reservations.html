@@ -19,3 +19,8 @@
     <p>No current reservations.</p>
 {% endif %}
 {% endblock %}
+
+{% block returnlink %}
+<hr>
+<a href="{% url 'index' %}">back to Equipment Reservations main page</a>
+{% endblock %}

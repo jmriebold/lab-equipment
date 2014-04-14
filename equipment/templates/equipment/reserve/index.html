@@ -26,5 +26,10 @@ End Date: <input type="date" id="endDate">
 <br>
 <button id="submit" onclick="AccessDates()">Submit</button>
 </p>
+</center>
+{% endblock %}
 
+{% block returnlink %}
+<hr>
+<a href="{% url 'index' %}">back to Equipment Reservations main page</a>
 {% endblock %}
