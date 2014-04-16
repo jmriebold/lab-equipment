@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Reserve Lab Equipment{% endblock %}
+
+{% block primary %}
+
+<center>
+<p>Your reservation has been made!  You will receive a confirmation email shortly.</p>
+
+{% endblock %}
+
+{% block returnlink %}
+<hr>
+<a href="{% url 'index' %}">back to Equipment Reservations main page</a>
+{% endblock %}

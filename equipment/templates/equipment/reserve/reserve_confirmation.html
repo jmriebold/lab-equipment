@@ -3,15 +3,6 @@
 {% block title %}Confirm Equipment Reservation{% endblock %}
 
 {% block primary %}
-
-<script language="JavaScript">
-function ConfirmReservation(){
-    // get purpose and class
-    var purpose = document.body.getElementById("Purpose").value;
-    var classname = document.body.getElementById("Class").value;
-    // POST redirect GET to create reservation object
-}
-</script>
 <p>
 Please confirm the details of your reservation below.  Your reservation will not be made until you click "Confirm Reservation."
 </p>
@@ -26,12 +17,17 @@ Please confirm the details of your reservation below.  Your reservation will not
 </table>
 <br>
 <center>
+<form action="{% url 'make_reservation' %}" method="post">
+{% csrf_token %}
+<input type="hidden" name="start_date_string" value={{ start_date_string }}>
+<input type="hidden" name="end_date_string" value={{ end_date_string }}>
+<input type="hidden" name="equipment_string" value={{ equipment_string }}>
 <table>
-<tr><td align="right"><b>Reservation Purpose (required):</b></td><td><textarea rows="4" cols="50" id="Purpose"></textarea></td></tr>
-<tr><td align="right"><b>If your reservation is for a class, please specify which one:</b></td><td><textarea rows="1" cols="50" id="Class"></textarea></td></tr>
+<tr><td align="right"><b>Reservation Purpose (required):</b></td><td><textarea rows="4" cols="50" name="purpose"></textarea></td></tr>
+<tr><td align="right"><b>If your reservation is for a UW course, please specify which one:</b></td><td><textarea rows="1" cols="50" name="course"></textarea></td></tr>
 </table>
-<p>
-<button id="confirm" onclick="ConfirmReservation()">Confirm Reservation</button>
+<input type="submit" value="Confirm Reservation">
+</form>
 
 {% endblock %}
 

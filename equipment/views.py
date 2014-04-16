@@ -1,6 +1,8 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
+from django.core.urlresolvers import reverse
 from django.template.defaultfilters import slugify
+from django.contrib.auth.models import User
 from equipment.models import Equipment, Book, Reservation
 from collections import defaultdict
 import datetime
@@ -58,6 +60,8 @@ def reserve_dates(request,start_date,end_date):
 
 def reserve_confirmation(request,start_date,end_date,equipment):
     # convert strings for dates into datetimes
+    start_date_string = start_date
+    end_date_string = end_date
     start_date,start_time = start_date.split('T')
     year,month,day = [int(x) for x in start_date.split('-')]
     hour,minute = [int(x) for x in start_time.split(':')]
@@ -67,7 +71,40 @@ def reserve_confirmation(request,start_date,end_date,equipment):
     hour,minute = [int(x) for x in end_time.split(':')]
     end_date = datetime.datetime(year,month,day,hour,minute)
     # convert string for equipment ids into list of equipment ids
+    equipment_string = equipment
     equipment = [int(x) for x in equipment.split('-')]
     equipment = Equipment.objects.filter(id__in=equipment)
-    context = {'start_date':start_date, 'end_date':end_date, 'equipment':equipment}
+    context = {'start_date':start_date, 'start_date_string':start_date_string, 'end_date':end_date, 'end_date_string':end_date_string, 'equipment':equipment, 'equipment_string':equipment_string}
     return render(request,'equipment/reserve/reserve_confirmation.html',context)
+
+def make_reservation(request):
+    start_date_string = request.POST['start_date_string']
+    end_date_string = request.POST['end_date_string']
+    equipment_string = request.POST['equipment_string']
+    purpose = request.POST['purpose']
+    course = request.POST['course']
+    user = User.objects.get(username__exact='admin')
+
+    # add something to make sure there is text for the reservation purpose
+
+    # convert strings to objects
+    start_date,start_time = start_date_string.split('T')
+    year,month,day = [int(x) for x in start_date.split('-')]
+    hour,minute = [int(x) for x in start_time.split(':')]
+    start_date = datetime.datetime(year,month,day,hour,minute)
+    end_date,end_time = end_date_string.split('T')
+    year,month,day = [int(x) for x in end_date.split('-')]
+    hour,minute = [int(x) for x in end_time.split(':')]
+    end_date = datetime.datetime(year,month,day,hour,minute)
+    # convert string for equipment ids into list of equipment ids
+    equipment = [int(x) for x in equipment_string.split('-')]
+    equipment = Equipment.objects.filter(id__in=equipment)
+
+    reservation = Reservation(purpose=purpose,course=course,start_date=start_date,end_date=end_date,reserved_by=user)
+    reservation.save()
+    reservation.equipment.add(*equipment)
+
+    return HttpResponseRedirect(reverse('done'))
+
+def done(request):
+    return render(request,'equipment/reserve/done.html')
