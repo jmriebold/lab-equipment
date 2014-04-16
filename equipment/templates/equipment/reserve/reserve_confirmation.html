@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Confirm Equipment Reservation{% endblock %}
+
+{% block primary %}
+
+<script language="JavaScript">
+function ConfirmReservation(){
+    // something here to pull out all checked ids
+    var equip = document.body.getElementsByTagName("input");
+    var selected_equip = new Array();
+    for (var i=0;i<equip.length;i++)
+        {
+        if (equip[i].checked)
+            {
+            selected_equip.push(equip[i].id);
+            }
+        }
+    alert(selected_equip);
+    // do a pop up window verifying equipment checked, dates, netid
+    // and ask for reservation purpose, class
+}
+</script>
+<p>
+Please confirm the details of your reservation below.  Your reservation will not be made until you click "Confirm."
+</p>
+<p>
+<b>The following equipment will be reserved for USER from {{ start_date }} to {{ end_date }}:</b>
+</p>
+<table>
+<tr><th><b>Name</b></th><th><b>Category</th><th><b>Manufacturer</b></th><th><b>Model</b></th><th><b>Lab</b></th><th><b>Use</b></th></tr>
+{% for equip in equipment %}
+    <tr><td><a href="{% url 'equip_detail' equip.get_category_display|slugify equip.slug %}">{{ equip.name }}</a></td><td>{{ equip.get_category_display }}</td><td>{{ equip.manufacturer }}</td><td>{{ equip.model }}</td><td>{{ equip.get_lab_display }}</td><td>{{ equip.get_lab_or_field_display }}</td></tr>
+{% endfor %}
+</table>
+<br>
+<center>
+<table>
+<tr><td align="right"><b>Reservation Purpose (required):</b></td><td><textarea rows="4" cols="50" id="Purpose"></textarea></td></tr>
+<tr><td align="right"><b>If your reservation is for a class, please specify which one:</b></td><td><input type="text" id="Class"></td></tr>
+</table>
+<p>
+<button id="confirm" onclick="ConfirmReservation()">Confirm Reservation</button>
+
+{% endblock %}
+
+{% block returnlink %}
+<hr>
+<a href="{% url 'index' %}">back to Equipment Reservations main page</a>
+{% endblock %}

@@ -6,7 +6,7 @@
 
 <script language="JavaScript">
 function MakeReservation(){
-    // something here to pull out all checked ids
+    // pull out all checked ids
     var equip = document.body.getElementsByTagName("input");
     var selected_equip = new Array();
     for (var i=0;i<equip.length;i++)
@@ -16,9 +16,10 @@ function MakeReservation(){
             selected_equip.push(equip[i].id);
             }
         }
-    alert(selected_equip);
-    // do a pop up window verifying equipment checked, dates, netid
-    // and ask for reservation purpose, class
+    var selected_equip = selected_equip.join('-');
+    // redirect to confirmation page with selected equipment
+    var url_mask = "{% url 'reserve_confirmation' start_date=start_date end_date=end_date equipment='1-2' %}".replace(/1-2/, selected_equip);
+    window.location.href=url_mask;
 }
 </script>
 

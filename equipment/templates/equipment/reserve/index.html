@@ -8,7 +8,7 @@
 function AccessDates(){
     var StartDate = document.getElementById('startDate').value;
     var EndDate = document.getElementById('endDate').value;
-    var url_mask = "{% url 'reserve_dates' start_date=12345 end_date=23456 %}".replace(/12345/, StartDate.toString()).replace(/23456/, EndDate.toString());
+    var url_mask = "{% url 'reserve_dates' start_date='1234T56' end_date='2345T67' %}".replace(/1234T56/, StartDate.toString()).replace(/2345T67/, EndDate.toString());
     window.location.href=url_mask;
 }
 </script>
@@ -17,9 +17,9 @@ function AccessDates(){
 <p>
 <b>When will you be using the equipment?</b>
 <p>
-Start Date: <input type="date" id="startDate">
+Start Date and Time: <input type="datetime-local" id="startDate">
 <br>
-End Date: <input type="date" id="endDate">
+End Date and Time: <input type="datetime-local" id="endDate">
 <br>
 <button id="submit" onclick="AccessDates()">Submit</button>
 </p>

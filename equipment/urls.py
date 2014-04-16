@@ -11,7 +11,8 @@ urlpatterns = patterns('',
     url(r'^equipment/(\w+)/(?P<slug>[A-Za-z0-9\-]+)/$', views.equip_detail, name="equip_detail"),
     url(r'^current-reservations$', views.current_reservations, name="current_reservations"),
     url(r'^reserve$', views.reserve, name="reserve"),
-    url(r'^reserve/(?P<start_date>[0-9\-]+)/(?P<end_date>[0-9\-]+)$', views.reserve_dates, name="reserve_dates"),
+    url(r'^reserve/(?P<start_date>[0-9\-]+T[0-9:]+)/(?P<end_date>[0-9\-]+T[0-9:]+)$', views.reserve_dates, name="reserve_dates"),
+    url(r'^reserve/(?P<start_date>[0-9\-]+T[0-9:]+)/(?P<end_date>[0-9\-]+T[0-9:]+)/(?P<equipment>[0-9\-]+)$', views.reserve_confirmation, name="reserve_confirmation"),
 )
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
