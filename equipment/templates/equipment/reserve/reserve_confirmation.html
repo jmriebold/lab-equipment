@@ -6,23 +6,14 @@
 
 <script language="JavaScript">
 function ConfirmReservation(){
-    // something here to pull out all checked ids
-    var equip = document.body.getElementsByTagName("input");
-    var selected_equip = new Array();
-    for (var i=0;i<equip.length;i++)
-        {
-        if (equip[i].checked)
-            {
-            selected_equip.push(equip[i].id);
-            }
-        }
-    alert(selected_equip);
-    // do a pop up window verifying equipment checked, dates, netid
-    // and ask for reservation purpose, class
+    // get purpose and class
+    var purpose = document.body.getElementById("Purpose").value;
+    var classname = document.body.getElementById("Class").value;
+    // POST redirect GET to create reservation object
 }
 </script>
 <p>
-Please confirm the details of your reservation below.  Your reservation will not be made until you click "Confirm."
+Please confirm the details of your reservation below.  Your reservation will not be made until you click "Confirm Reservation."
 </p>
 <p>
 <b>The following equipment will be reserved for USER from {{ start_date }} to {{ end_date }}:</b>
@@ -37,7 +28,7 @@ Please confirm the details of your reservation below.  Your reservation will not
 <center>
 <table>
 <tr><td align="right"><b>Reservation Purpose (required):</b></td><td><textarea rows="4" cols="50" id="Purpose"></textarea></td></tr>
-<tr><td align="right"><b>If your reservation is for a class, please specify which one:</b></td><td><input type="text" id="Class"></td></tr>
+<tr><td align="right"><b>If your reservation is for a class, please specify which one:</b></td><td><textarea rows="1" cols="50" id="Class"></textarea></td></tr>
 </table>
 <p>
 <button id="confirm" onclick="ConfirmReservation()">Confirm Reservation</button>

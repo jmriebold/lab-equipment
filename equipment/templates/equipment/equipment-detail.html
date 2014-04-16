@@ -4,6 +4,7 @@
 
 {% block primary %}
 
+<center>
 {% if equip %}
     {% for each_equip in equip %}
         <table>
@@ -29,7 +30,7 @@
 {% else %}
     <p>No equipment is available.</p>
 {% endif %}
-
+</center>
 {% endblock %}
 
 {% block returnlink %}
