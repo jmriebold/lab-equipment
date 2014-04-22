@@ -67,9 +67,12 @@ def reserve_dates(request,start_date,end_date):
 
             # exclude unavailable equipment, equipment that isn't reservable,
             # and equipment whose max reservation length is less than the requested reservation length
-            equipment = Equipment.objects.exclude(id__in=unavailable_equipment).exclude(reservable=False).exclude(max_reservation_length__lt=reservation_length)
+            available_equipment = Equipment.objects.exclude(id__in=unavailable_equipment).exclude(reservable=False).exclude(max_reservation_length__lt=reservation_length)
+            unavailable_equipment = Equipment.objects.filter(id__in=unavailable_equipment)
+            nonreservable_equipment = Equipment.objects.filter(reservable=False)
+            shorter_reservation_equipment = Equipment.objects.exclude(id__in=unavailable_equipment).filter(reservable=True).filter(max_reservation_length__lt=reservation_length)
 
-            context = {'equipment': equipment,'start_date':start_date,'end_date':end_date}
+            context = {'available_equipment':available_equipment,'unavailable_equipment':unavailable_equipment,'nonreservable_equipment':nonreservable_equipment,'shorter_reservation_equipment':shorter_reservation_equipment,'start_date':start_date,'end_date':end_date}
             return render(request, 'equipment/reserve/reserve_dates.html',context)
 
 def reserve_confirmation(request,start_date,end_date,equipment):
