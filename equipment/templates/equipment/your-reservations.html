@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Your Reservations{% endblock %}
+
+{% block primary %}
+
+<p><b>Past Reservations</b></p>
+{% if past_reservations %}
+    {% for reservation in past_reservations %}
+        {{ reservation.reserved_by }} has a reservation
+        from {{ reservation.start_date }} to {{ reservation.end_date }} for the following equipment:
+        <ul>
+        {% for equipment_piece in reservation.equipment.all %}
+           <li> <a href="{% url 'equip_detail' equipment_piece.get_category_display|slugify equipment_piece.slug %}">{{ equipment_piece.name }}</a>
+        {% endfor %}
+        </ul>
+        <p>
+    {% endfor %}
+{% else %}
+    <p>No past reservations.</p>
+{% endif %}
+
+<p><b>Current Reservations</b></p>
+{% if current_reservations %}
+    {% for reservation in current_reservations %}
+        {{ reservation.reserved_by }} has a reservation
+        from {{ reservation.start_date }} to {{ reservation.end_date }} for the following equipment:
+        <ul>
+        {% for equipment_piece in reservation.equipment.all %}
+           <li> <a href="{% url 'equip_detail' equipment_piece.get_category_display|slugify equipment_piece.slug %}">{{ equipment_piece.name }}</a>
+        {% endfor %}
+        </ul>
+        <p>
+    {% endfor %}
+{% else %}
+    <p>No current reservations.</p>
+{% endif %}
+
+{% endblock %}
+
+{% block returnlink %}
+<hr>
+<a href="{% url 'index' %}">back to Equipment Reservations main page</a>
+{% endblock %}

@@ -32,6 +32,13 @@ def current_reservations(request):
     context = {'reservations': reservations}
     return render(request, 'equipment/current-reservations.html', context)
 
+def your_reservations(request):
+    # change this to include only the user's reservations
+    past_reservations = Reservation.objects.filter(end_date__lt=datetime.datetime.now()).order_by('start_date')
+    current_reservations = Reservation.objects.exclude(end_date__lt=datetime.datetime.now()).order_by('start_date')
+    context = {'past_reservations':past_reservations,'current_reservations':current_reservations}
+    return render(request, 'equipment/your-reservations.html', context)
+
 def reserve(request):
     return render(request, 'equipment/reserve/index.html')
 
