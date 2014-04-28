@@ -12,7 +12,7 @@ Please confirm the details of your reservation below.  Your reservation will not
 <table>
 <tr><th><b>Name</b></th><th><b>Category</th><th><b>Manufacturer</b></th><th><b>Model</b></th><th><b>Lab</b></th><th><b>Use</b></th></tr>
 {% for equip in equipment %}
-    <tr><td><a href="{% url 'equip_detail' equip.get_category_display|slugify equip.slug %}">{{ equip.name }}</a></td><td>{{ equip.get_category_display }}</td><td>{{ equip.manufacturer }}</td><td>{{ equip.model }}</td><td>{{ equip.get_lab_display }}</td><td>{{ equip.get_lab_or_field_display }}</td></tr>
+    <tr><td><a href="{% url 'equip_detail' equip.slug %}">{{ equip.name }}</a></td><td>{{ equip.get_category_display }}</td><td>{{ equip.manufacturer }}</td><td>{{ equip.model }}</td><td>{{ equip.get_lab_display }}</td><td>{{ equip.get_lab_or_field_display }}</td></tr>
 {% endfor %}
 </table>
 <br>

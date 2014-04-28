@@ -10,7 +10,7 @@
         from {{ reservation.start_date }} to {{ reservation.end_date }} for the following equipment:
         <ul>
         {% for equipment_piece in reservation.equipment.all %}
-           <li> <a href="{% url 'equip_detail' equipment_piece.get_category_display|slugify equipment_piece.slug %}">{{ equipment_piece.name }}</a>
+           <li> <a href="{% url 'equip_detail' equipment_piece.slug %}">{{ equipment_piece.name }}</a>
         {% endfor %}
         </ul>
         <p>

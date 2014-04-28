@@ -4,20 +4,14 @@
 
 {% block primary %}
 
-{% for category,equip_list in equip.items %}
-    <p>
-    <b>{{ category.1 }}</b>
-    </p>
-    {% if equip_list %}
-        {% for each_equip in equip_list %} 
-            <blockquote>
-            <a href="{% url 'equip_detail' each_equip.get_category_display|slugify each_equip.slug %}">{{ each_equip.name }}</a> {{ each_equip.manufacturer }} {{ each_equip.model }} ({{ each_equip.get_lab_display }})
-            </blockquote>
-        {% endfor %}
-    {% else %}
-        <blockquote>No equipment is available.</blockquote>
-    {% endif %}
+<table id='equip_list' class='tablesorter'>
+<thead><tr><th>Name</th><th filter-type='ddl'>Category</th><th>Manufacturer</th><th>Model</th><th filter-type='ddl'>Lab</th><th>Use</th></tr></thead>
+<tbody>
+{% for equip in equip_list %}
+    <tr><td><a href="{% url 'equip_detail' equip.slug %}">{{ equip.name }}</a></td><td>{{ equip.get_category_display }}</td><td>{{ equip.manufacturer }}</td><td>{{ equip.model }}</td><td>{{ equip.get_lab_display }}</td><td>{{ equip.get_lab_or_field_display }}</td></tr>
 {% endfor %}
+</tbody>
+</table>
 
 {% endblock %}
 

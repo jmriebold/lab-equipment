@@ -11,15 +11,13 @@ def index(request):
     return render(request, 'equipment/index.html')
 
 def all_equipment(request):
-    equip = {}
-    for category in Equipment.CATEGORY_CHOICES:
-        equip[category] = Equipment.objects.filter(category=category[0])
-    context = {'equip': equip}
+    equip_list = Equipment.objects.all()
+    context = {'equip_list': equip_list}
     return render(request, 'equipment/equipment.html', context)
 
 def equip_category(request,category):
-    equip = Equipment.objects.filter(category=category)
-    context = {'equip': equip}
+    equip_list = Equipment.objects.filter(category=category)
+    context = {'equip_list': equip_list}
     return render(request, 'equipment/equipment.html', context)
 
 def equip_detail(request,slug):
