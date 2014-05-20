@@ -69,8 +69,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'lab_equipment',
-        'USER': 'admin',
-        'PASSWORD': 'testing123!',
+        'USER': 'calendar',
+        'PASSWORD': 'mighty0',
         'HOST': '',
         'PORT': '',
     }
@@ -96,12 +96,14 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
-    '/home/claire/Documents/Work/lab-equipment/static/',
+    '/home/calendar/lab-equipment/static_dir/',
 )
+
+STATIC_ROOT = '/home/calendar/lab-equipment/static/'
 
 # Media files
 
-MEDIA_ROOT = '/home/claire/Documents/Work/lab-equipment/media/'
+MEDIA_ROOT = '/home/calendar/lab-equipment/media/'
 
 MEDIA_URL = '/media/'
 

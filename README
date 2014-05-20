@@ -1,14 +1,12 @@
 Claire Jaja
 an equipment reservation system for the University of Washington Phonetics and Sociolinguistics labs
 
-Created using Django v. 1.6.2
+Created using Django v. 1.6.4
 Using additional app South for database migration
-Using MySQL database as backend (named equipment_reservations, can be accessed by root user w/ same password as phonlab@homer or by user: equipment, also same password)
+Using MySQL database as backend (named lab_equipment, can be accessed by user: calendar)
+Using virtualenv for local packages
 
 When changes are made to "equipment" app, run:
     python manage.py schemamigration equipment --auto
     python manage.py migrate equipment
 
-superuser admin account
-user: admin
-password: testing123!
