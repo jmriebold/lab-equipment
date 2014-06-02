@@ -12,7 +12,12 @@ def index(request):
 
 def all_equipment(request):
     equip_list = Equipment.objects.all()
-    context = {'equip_list': equip_list}
+    end_equip_list = []
+    for equip in equip_list:
+	split_image_url = equip.image.url.split(".")
+        thumbnail = ".".join(split_image_url[:-1])+"_thumbnail."+split_image_url[-1]
+        end_equip_list.append((equip,thumbnail))
+    context = {'equip_list': end_equip_list}
     return render(request, 'equipment/equipment.html', context)
 
 def equip_category(request,category):
