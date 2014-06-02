@@ -107,4 +107,6 @@ MEDIA_ROOT = '/home/calendar/lab-equipment/media/'
 
 MEDIA_URL = '/media/'
 
-IMAGE_MAX_WIDTH = 200
+IMAGE_MAX_WIDTH = 300
+
+THUMBNAIL_WIDTH = 100

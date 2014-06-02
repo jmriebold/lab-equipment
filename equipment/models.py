@@ -70,7 +70,7 @@ class Equipment(models.Model):
     # equipment has privilege level that says who can check it out
     # this can be checked against a user's privilege level
     # ideally, will implement so can be overridden by lab director
-    PRIVILEGE_LEVELS = (('3','director only'),('2','lab member or director only'),('1','lab member, director, or student'),)
+    PRIVILEGE_LEVELS = (('1','lab user'),('2','field user'),('3','student'),('4','advanced field user'),('5','lab director'),)
 
     name = models.CharField(max_length=200) # unique name for each piece of equipment
     slug = models.SlugField()
