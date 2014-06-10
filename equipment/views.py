@@ -62,7 +62,8 @@ def reserve_dates(request,start_date,end_date):
         end_datetime = datetime.datetime(year,month,day,hour,minute)
 
         # calculate reservation length in hours
-        reservation_length = (end_datetime - start_datetime).total_seconds()/60/60
+        reservation_length = end_datetime - start_datetime
+	reservation_length = reservation_length.seconds/60/60 + reservation_length.days*24
 
         if not reservation_length > 0:
             return render(request, 'equipment/reserve/index.html', {'error_message': "Invalid time span! Please enter an end date that is after your start date."})
