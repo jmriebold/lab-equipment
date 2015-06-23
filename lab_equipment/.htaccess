@@ -1,2 +1,3 @@
 AuthType UWNetID
+ShibRequireSession on
 require valid-user
