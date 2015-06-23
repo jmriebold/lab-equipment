@@ -51,11 +51,10 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-# Uncomment this line when deploying on the server
-# to use UW netid authentication
-#AUTHENTICATION_BACKENDS = (
-#    'django.contrib.auth.backends.RemoteUserBackend',
-#)
+# Use UW netid authentication
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.RemoteUserBackend',
+)
 
 ROOT_URLCONF = 'lab_equipment.urls'
 
