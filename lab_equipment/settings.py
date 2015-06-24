@@ -54,6 +54,7 @@ MIDDLEWARE_CLASSES = (
 # Use UW netid authentication
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.RemoteUserBackend',
+    'django.contrib.auth.backends.ModelBackend'
 )
 
 ROOT_URLCONF = 'lab_equipment.urls'
