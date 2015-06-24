@@ -24,7 +24,8 @@ If you've modified database fields, this will prompt you for how to migrate exis
 * To update what information (about equipment, user, etc) is passed from the underlying database to a website, edit equipment/views.py.
 * To update what URL patterns are viable, edit equipment/urls.py.
 * To update how webpages actually appear, edit templates (which appear within equipment/templates folder).
-* To update general settings (<b>Important:</b> Some of these settings (noted within the file) need to be changed before the application is officially launched!), edit lab_equipment/settings.py file.
+* To update general settings, edit lab_equipment/settings.py file.
+* <b>Important:</b> After changing views, models, or other configuration files, execute <code>touch lab_equipment/lab_equipment/wsgi.py</code> to trigger a reload of the server.
 
 # To Do
 ## Major
