@@ -8,7 +8,13 @@ from collections import defaultdict
 import datetime
 
 def index(request):
-    return render(request, 'equipment/index.html')
+    # Get UW NetID
+    remote_user = request.environ.get('REMOTE_USER')
+    netid = remote_user.split('@')[0]
+
+    context = {"netid": netid}
+
+    return render(request, 'equipment/index.html', context)
 
 def all_equipment(request):
     equip_list = Equipment.objects.all()
