@@ -13,7 +13,6 @@ def index(request):
     # Get UW NetID
     remote_user = request.environ.get('REMOTE_USER')
     netid = remote_user.split('@')[0]
-
     context = {"netid": netid}
 
     return render(request, 'equipment/index.html', context)
@@ -152,7 +151,11 @@ def make_reservation(request):
     equipment_string = request.POST['equipment_string']
     purpose = request.POST['purpose']
     course = request.POST['course']
-    user = User.objects.get(username__exact='admin')
+
+    # Get current user
+    remote_user = request.environ.get('REMOTE_USER')
+    netid = remote_user.split('@')[0]
+    user = netid
 
     # add something to make sure there is text for the reservation purpose
 
