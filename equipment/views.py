@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 
 from equipment.models import Equipment, Reservation
-from equipment.utils import add_to_calendar
+from equipment.utils import add_to_calendar, send_confirmation
 
 
 def index(request):
@@ -176,13 +176,13 @@ def make_reservation(request):
     equipment = [int(x) for x in equipment_string.split('-')]
     equipment = Equipment.objects.filter(id__in=equipment)
 
-
     reservation = Reservation(purpose=purpose, course=course, start_date=start_date, end_date=end_date,
                               reserved_by=user)
     reservation.save()
     reservation.equipment.add(*equipment)
 
     add_to_calendar(name, email, equipment, start_date, end_date, purpose)
+    send_confirmation(name, email, equipment, start_date, end_date)
 
     return HttpResponseRedirect(reverse('done'))
 

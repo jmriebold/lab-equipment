@@ -4,6 +4,7 @@
 # to the maximum allowed width, adding reservations to the Google Calendars, and sending reminder emails.
 
 import re
+import smtplib
 
 from PIL import Image
 from django.conf import settings
@@ -40,11 +41,12 @@ def create_thumbnail(image):
     return thumbnail
 
 
-# Add reservation to Google Calendar
-def add_to_calendar(name, email, equipment, start_date, end_date, purpose):
-    start_date = str(start_date).replace(' ', 'T')
-    end_date = str(end_date).replace(' ', 'T')
+# Convert lab code to lab name
+def get_lab(lab):
+    return lab.replace('P', 'phonlab').replace('S', 'sociolab')
 
+
+def get_equip_details(equipment):
     equipment = str(equipment)
     # Strip formatting
     equipment = re.sub('.*: |[<>[]]', '', equipment)
@@ -55,6 +57,16 @@ def add_to_calendar(name, email, equipment, start_date, end_date, purpose):
     equip_name = equipment[1]
     equip_model = ' '.join(equipment[2:4])
     equip_lab = get_lab(equipment[4])
+
+    return equip_cat, equip_name, equip_model, equip_lab
+
+
+# Add reservation to Google Calendar
+def add_to_calendar(name, email, equipment, start_date, end_date, purpose):
+    start_date = str(start_date).replace(' ', 'T')
+    end_date = str(end_date).replace(' ', 'T')
+
+    equip_cat, equip_name, equip_model, equip_lab = get_equip_details(equipment)
 
     service_account_email = '275676223429-p0g1vpujgfric1gjoo020e898lhui6pa@developer.gserviceaccount.com'
 
@@ -94,11 +106,6 @@ def add_to_calendar(name, email, equipment, start_date, end_date, purpose):
     event = service.events().insert(calendarId=cal_id, body=event).execute()
 
 
-# Convert lab code to lab name
-def get_lab(lab):
-    return lab.replace('P', 'phonlab').replace('S', 'sociolab')
-
-
 def get_calendar(lab, category, name):
     # Dict storing calendar IDs for lab equipment
     calendars = {
@@ -136,3 +143,30 @@ def get_calendar(lab, category, name):
     }
 
     return calendars[lab][category][name]
+
+
+def send_email(recipient, message):
+    username = 'lbchkout@uw.edu'
+    with open('/home/calendar/email_account.txt', 'r') as f:
+        password = f.readline()
+
+    message = 'From: %s\n%s' % ('UW Linguistics Equipment Checkout', message)
+
+    # Login to server and send email
+    server = smtplib.SMTP('smtp.gmail.com:587')
+    server.ehlo()
+    server.starttls()
+    server.login(username, password)
+    server.sendmail(username, recipient, message)
+    server.close()
+
+
+def send_confirmation(recipient, email, equipment, start_date, end_date):
+    equip_cat, equip_name, equip_model, equip_lab = get_equip_details(equipment)
+
+    subject = 'Reservation Confirmation'
+    text = 'Dear ' + recipient + '\nYou have reserved %s (%s) from the %s from %s to %s.' % (
+        equip_name, equip_model, equip_lab, start_date, end_date)
+    message = 'Subject: %s\n\n%s' % (subject, text)
+
+    send_email(email, message)
