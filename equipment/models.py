@@ -142,7 +142,6 @@ class Book(models.Model):
         return u"%s by %s" % (self.title, self.author)
 
     def clean(self):
-        raise ValidationError("privilege level is "+self.privilege_level)
         # max reservation length and privilege level required if reservable
         if self.reservable:
             if self.max_reservation_length is None or self.privilege_level is None:
