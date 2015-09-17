@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 
 from equipment.models import Equipment, Reservation
+from equipment.utils import add_to_calendar
 
 
 def index(request):
@@ -173,6 +174,8 @@ def make_reservation(request):
                               reserved_by=user)
     reservation.save()
     reservation.equipment.add(*equipment)
+
+    add_to_calendar(user, equipment, start_date, end_date)
 
     return HttpResponseRedirect(reverse('done'))
 
