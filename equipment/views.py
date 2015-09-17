@@ -135,11 +135,16 @@ def reserve_confirmation(request, start_date, end_date, equipment):
     hour, minute = [int(x) for x in end_time.split(':')]
     end_date = datetime.datetime(year, month, day, hour, minute)
 
+    # Get UW NetID
+    remote_user = request.environ.get('REMOTE_USER')
+    netid = remote_user.split('@')[0]
+
     # convert string for equipment ids into list of equipment ids
     equipment_string = equipment
     equipment = [int(x) for x in equipment.split('-')]
     equipment = Equipment.objects.filter(id__in=equipment)
-    context = {'start_date': start_date, 'start_date_string': start_date_string, 'end_date': end_date,
+
+    context = {"netid": netid, 'start_date': start_date, 'start_date_string': start_date_string, 'end_date': end_date,
                'end_date_string': end_date_string, 'equipment': equipment, 'equipment_string': equipment_string}
 
     return render(request, 'equipment/reserve/reserve_confirmation.html', context)
