@@ -154,8 +154,7 @@ def make_reservation(request):
 
     # Get current user
     remote_user = request.environ.get('REMOTE_USER')
-    netid = remote_user.split('@')[0]
-    user = netid
+    user = User.objects.get(username__exact=remote_user)
 
     # add something to make sure there is text for the reservation purpose
 
