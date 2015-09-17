@@ -1,11 +1,11 @@
-from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
-from django.core.urlresolvers import reverse
-from django.template.defaultfilters import slugify
-from django.contrib.auth.models import User
-from equipment.models import Equipment, Book, Reservation
-from collections import defaultdict
 import datetime
+
+from django.shortcuts import render
+from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
+from django.contrib.auth.models import User
+
+from equipment.models import Equipment, Reservation
 
 
 def index(request):
