@@ -10,12 +10,7 @@ from equipment.utils import add_to_calendar
 
 
 def index(request):
-    # Get UW NetID
-    remote_user = request.environ.get('REMOTE_USER')
-    netid = remote_user.split('@')[0]
-    context = {"netid": netid}
-
-    return render(request, 'equipment/index.html', context)
+    return render(request, 'equipment/index.html')
 
 
 # List all equipment
