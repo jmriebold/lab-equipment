@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-from image import autoresize_image
+from utils import autoresize_image
 
 
 # Going to use Django's Users class
