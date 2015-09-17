@@ -46,15 +46,22 @@ def add_to_calendar(name, email, equipment, start_date, end_date, purpose):
     end_date = str(end_date).replace(' ', 'T')
 
     equipment = str(equipment)
-    equip_name = re.sub('.* - ([^(]+).*', '\\1', equipment)
-    equip_lab = get_lab(re.sub('.* \(([^)]+)\).*', '\\1', equipment))
+    # Strip formatting
+    equipment = re.sub('.*: |[<>[]]', '', equipment)
+    # Split into fields
+    equipment = equipment.split(',')
+    # Store values
+    equip_cat = equipment[0]
+    equip_name = equipment[1]
+    equip_model = ' '.join(equipment[2:4])
+    equip_lab = get_lab(equipment[4])
 
-    # Get Google credentials
     service_account_email = '275676223429-p0g1vpujgfric1gjoo020e898lhui6pa@developer.gserviceaccount.com'
 
     with open('/home/calendar/privatekey.pem') as f:
         private_key = f.read()
 
+    # Get Google credentials
     credentials = SignedJwtAssertionCredentials(
         service_account_email,
         private_key,
@@ -68,7 +75,7 @@ def add_to_calendar(name, email, equipment, start_date, end_date, purpose):
 
     # Define event
     event = {
-        'summary': name + ': ' + equip_name + ' (' + equip_lab + ')',
+        'summary': name + ': ' + equip_model + ' (' + equip_lab + ')',
         'description': purpose + '\n\nContact: ' + name + ' (' + email + ')',
         'start': {
             'dateTime': start_date,
@@ -80,10 +87,52 @@ def add_to_calendar(name, email, equipment, start_date, end_date, purpose):
         },
     }
 
+    # Find calendar
+    cal_id = get_calendar(equip_lab, equip_cat, equip_name)
+
     # Save to calendar
-    event = service.events().insert(calendarId='lbchkout@uw.edu', body=event).execute()
+    event = service.events().insert(calendarId=cal_id, body=event).execute()
 
 
 # Convert lab code to lab name
 def get_lab(lab):
     return lab.replace('P', 'phonlab').replace('S', 'sociolab')
+
+
+def get_calendar(lab, category, name):
+    # Dict storing calendar IDs for lab equipment
+    calendars = {
+        'phonlab': {
+            'rec': {
+                'Flash recorder 3': 'mmdmuahdqftv87neh31absdhts@group.calendar.google.com',
+                'Flash recorder 4': 'tfhu3bhi7apnv17l23qj1fr3e0@group.calendar.google.com',
+                'Flash recorder 5': 'mfhl73covk8tkqplrkn0p7iok4@group.calendar.google.com',
+                'Flash recorder 6': 'ir9r7nf35vj9ft6890crl4ebgo@group.calendar.google.com',
+                'Flash recorder 7': 'mb3p8toe9oettoki3o1krm679k@group.calendar.google.com',
+                'Flash recorder 8': 'ro88t9o5a7b3m6i3v03fesdfus@group.calendar.google.com'
+            },
+            'comp': {
+                'Gambit': 'u1l74m9g9r93f85goetjanjrfs@group.calendar.google.com',
+                'Nightcrawler': 'p9jahh5ia3nj3dll630jonegns@group.calendar.google.com'
+            },
+            'booth': {
+                'Magneto': '7tp04hggfn4fq9am8n4sbgso3k@group.calendar.google.com'
+            },
+            'oth': '9se5b0fvkvfrn62tuicp4d1h1o@group.calendar.google.com'
+        },
+        'sociolab': {
+            'rec': {
+                'Flash recorder 1': 'u9mubhqkqrdaqmt62okdulfras@group.calendar.google.com',
+                'Flash recorder 2': '9mdgkl5e5nrclr7c4m8f74d3ts@group.calendar.google.com',
+                'Flash recorder 3': 'n4kbm7q8taflqn20qooti85qlg@group.calendar.google.com'
+            },
+            'comp': {
+                'Abaddon': 'ev9pb2dmu2j3fleskd8o6tgvnk@group.calendar.google.com',
+                'Astrid': 'teo2on31gmtl61lkln0vd0ql0c@group.calendar.google.com',
+                'Caan': 'qa61uu0o9jlne7kphc7aofj6i0@group.calendar.google.com',
+                'Chesterton': '7hnn52hibggqriv6i36uslcavo@group.calendar.google.com'
+            },
+        }
+    }
+
+    return calendars[lab][category][name]
