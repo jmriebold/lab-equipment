@@ -152,9 +152,13 @@ def make_reservation(request):
     purpose = request.POST['purpose']
     course = request.POST['course']
 
-    # Get current user
+    # Get current user, name, and email
     remote_user = request.environ.get('REMOTE_USER')
     user = User.objects.get(username__exact=remote_user)
+    name = user.get_full_name()
+    if name == '':
+        name = user.split('@')[0]
+    email = str(user)
 
     # add something to make sure there is text for the reservation purpose
 
@@ -172,12 +176,13 @@ def make_reservation(request):
     equipment = [int(x) for x in equipment_string.split('-')]
     equipment = Equipment.objects.filter(id__in=equipment)
 
+
     reservation = Reservation(purpose=purpose, course=course, start_date=start_date, end_date=end_date,
                               reserved_by=user)
     reservation.save()
     reservation.equipment.add(*equipment)
 
-    add_to_calendar(user, equipment, start_date, end_date)
+    add_to_calendar(name, email, equipment, start_date, end_date, purpose)
 
     return HttpResponseRedirect(reverse('done'))
 

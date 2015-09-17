@@ -3,6 +3,8 @@
 # This module provides various functions for the equipment app, including automatically resizing images,
 # to the maximum allowed width, adding reservations to the Google Calendars, and sending reminder emails.
 
+import re
+
 from PIL import Image
 from django.conf import settings
 import httplib2
@@ -39,9 +41,13 @@ def create_thumbnail(image):
 
 
 # Add reservation to Google Calendar
-def add_to_calendar(user, equipment, start_date, end_date):
+def add_to_calendar(name, email, equipment, start_date, end_date, purpose):
     start_date = str(start_date).replace(' ', 'T')
     end_date = str(end_date).replace(' ', 'T')
+
+    equipment = str(equipment)
+    equip_name = re.sub('.* - ([^(]+).*', '\\1', equipment)
+    equip_lab = get_lab(re.sub('.* \(([^)]+)\).*', '\\1', equipment))
 
     # Get Google credentials
     service_account_email = '275676223429-p0g1vpujgfric1gjoo020e898lhui6pa@developer.gserviceaccount.com'
@@ -62,8 +68,8 @@ def add_to_calendar(user, equipment, start_date, end_date):
 
     # Define event
     event = {
-        'summary': str(user) + ': ' + str(equipment),
-        'description': 'Checked out by ' + str(user),
+        'summary': name + ': ' + equip_name + ' (' + equip_lab + ')',
+        'description': purpose + '\n\nContact: ' + name + ' (' + email + ')',
         'start': {
             'dateTime': start_date,
             'timeZone': 'America/Los_Angeles',
@@ -76,3 +82,8 @@ def add_to_calendar(user, equipment, start_date, end_date):
 
     # Save to calendar
     event = service.events().insert(calendarId='lbchkout@uw.edu', body=event).execute()
+
+
+# Convert lab code to lab name
+def get_lab(lab):
+    return lab.replace('P', 'phonlab').replace('S', 'sociolab')
