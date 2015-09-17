@@ -91,7 +91,7 @@ class Equipment(models.Model):
     # can check if is currently available by checking if there's any current reservation
 
     def __unicode__(self):
-        return u"%s : %s %s" % (self.name, self.manufacturer, self.model)
+        return u"%s - %s %s (%s)" % (self.name, self.manufacturer, self.model, self.lab)
 
     def clean(self):
         # max reservation length and privilege level required if reservable
