@@ -18,40 +18,52 @@ def index(request):
     return render(request, 'equipment/index.html', context)
 
 
+# List all equipment
 def all_equipment(request):
     equip_list = Equipment.objects.all()
     end_equip_list = []
+
     for equip in equip_list:
         split_image_url = equip.image.url.split(".")
         thumbnail = ".".join(split_image_url[:-1]) + "_thumbnail." + split_image_url[-1]
         end_equip_list.append((equip, thumbnail))
+
     context = {'equip_list': end_equip_list}
+
     return render(request, 'equipment/equipment.html', context)
 
 
+# List equipment by category
 def equip_category(request, category):
     equip_list = Equipment.objects.filter(category=category)
     context = {'equip_list': equip_list}
+
     return render(request, 'equipment/equipment.html', context)
 
 
+# List equipment details
 def equip_detail(request, slug):
     equip = Equipment.objects.filter(slug=slug)
     context = {'equip': equip}
+
     return render(request, 'equipment/equipment-detail.html', context)
 
 
+# Display current reservations
 def current_reservations(request):
     reservations = Reservation.objects.exclude(end_date__lt=datetime.datetime.now()).order_by('start_date')
     context = {'reservations': reservations}
+
     return render(request, 'equipment/current-reservations.html', context)
 
 
+# Display user's reservations
 def your_reservations(request):
     # change this to include only the user's reservations
     past_reservations = Reservation.objects.filter(end_date__lt=datetime.datetime.now()).order_by('start_date')
     current_reservations = Reservation.objects.exclude(end_date__lt=datetime.datetime.now()).order_by('start_date')
     context = {'past_reservations': past_reservations, 'current_reservations': current_reservations}
+
     return render(request, 'equipment/your-reservations.html', context)
 
 
@@ -93,8 +105,8 @@ def reserve_dates(request, start_date, end_date):
                 for equipment in reservation.equipment.all():
                     unavailable_equipment.add(equipment.id)
 
-            # exclude unavailable equipment, equipment that isn't reservable,
-            # and equipment whose max reservation length is less than the requested reservation length
+            # exclude unavailable equipment, equipment that isn't reservable, and equipment whose max reservation
+            # length is less than the requested reservation length
             available_equipment = Equipment.objects.exclude(id__in=unavailable_equipment).exclude(
                 reservable=False).exclude(max_reservation_length__lt=reservation_length)
             unavailable_equipment = Equipment.objects.filter(id__in=unavailable_equipment)
@@ -106,6 +118,7 @@ def reserve_dates(request, start_date, end_date):
                        'nonreservable_equipment': nonreservable_equipment,
                        'shorter_reservation_equipment': shorter_reservation_equipment, 'start_date': start_date,
                        'end_date': end_date}
+
             return render(request, 'equipment/reserve/reserve_dates.html', context)
 
 
@@ -121,12 +134,14 @@ def reserve_confirmation(request, start_date, end_date, equipment):
     year, month, day = [int(x) for x in end_date.split('-')]
     hour, minute = [int(x) for x in end_time.split(':')]
     end_date = datetime.datetime(year, month, day, hour, minute)
+
     # convert string for equipment ids into list of equipment ids
     equipment_string = equipment
     equipment = [int(x) for x in equipment.split('-')]
     equipment = Equipment.objects.filter(id__in=equipment)
     context = {'start_date': start_date, 'start_date_string': start_date_string, 'end_date': end_date,
                'end_date_string': end_date_string, 'equipment': equipment, 'equipment_string': equipment_string}
+
     return render(request, 'equipment/reserve/reserve_confirmation.html', context)
 
 
@@ -149,6 +164,7 @@ def make_reservation(request):
     year, month, day = [int(x) for x in end_date.split('-')]
     hour, minute = [int(x) for x in end_time.split(':')]
     end_date = datetime.datetime(year, month, day, hour, minute)
+
     # convert string for equipment ids into list of equipment ids
     equipment = [int(x) for x in equipment_string.split('-')]
     equipment = Equipment.objects.filter(id__in=equipment)
