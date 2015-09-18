@@ -125,7 +125,8 @@ def get_calendar(lab, category, name):
             'booth': {
                 'Magneto': '7tp04hggfn4fq9am8n4sbgso3k@group.calendar.google.com'
             },
-            'oth': '9se5b0fvkvfrn62tuicp4d1h1o@group.calendar.google.com'
+            'oth': '9se5b0fvkvfrn62tuicp4d1h1o@group.calendar.google.com',
+            'default': 'uwphonetics@gmail.com'
         },
         'sociolab': {
             'rec': {
@@ -139,10 +140,17 @@ def get_calendar(lab, category, name):
                 'Caan': 'qa61uu0o9jlne7kphc7aofj6i0@group.calendar.google.com',
                 'Chesterton': '7hnn52hibggqriv6i36uslcavo@group.calendar.google.com'
             },
+            'default': 'uw.socioling@gmail.com'
         }
     }
 
-    return calendars[lab][category][name]
+    # If equipment doesn't have a special calendar, return main lab calendar
+    try:
+        calendar = calendars[lab][category][name]
+    except KeyError:
+        calendar = calendars[lab]['default']
+
+    return calendar
 
 
 def send_email(recipient, message):
