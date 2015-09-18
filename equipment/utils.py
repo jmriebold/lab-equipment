@@ -106,6 +106,7 @@ def add_to_calendar(name, email, equipment, start_date, end_date, purpose):
     event = service.events().insert(calendarId=cal_id, body=event).execute()
 
 
+# Get the ID of the calendar for a piece of equipment
 def get_calendar(lab, category, name):
     # Dict storing calendar IDs for lab equipment
     calendars = {
@@ -169,6 +170,7 @@ def send_email(recipient, message):
     server.close()
 
 
+# Send a confirmation email on successful reservation
 def send_confirmation(recipient, email, equipment, start_date, end_date):
     equip_cat, equip_name, equip_model, equip_lab = get_equip_details(equipment)
 
