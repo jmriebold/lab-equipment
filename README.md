@@ -26,18 +26,3 @@ If you've modified database fields, this will prompt you for how to migrate exis
 * To update how webpages actually appear, edit templates (which appear within equipment/templates folder).
 * To update general settings, edit lab_equipment/settings.py file.
 * <b>Important:</b> After changing views, models, or other configuration files, execute <code>touch lab_equipment/lab_equipment/wsgi.py</code> to trigger a reload of the server.
-
-# To Do
-## Major
-* Add "Your Reservations" page for users that show past, current, and future reservations, with options to cancel reservation, mark equipment as lost/broken/stolen, use checklist for verifying taking out/returning equipment, renew reservation (if equipment is not already reserved by others for requested dates), etc.
-* Use Google Calendar API to automatically add reservation events to the existing lab calendars.
-* Implement email notifications to be sent 24 hours before start of reservation, 24 hour before end of reservation, and 24 hours after end of reservation if the equipment was not marked as returned (within "Your Reservations" page) - last email also sent to appropriate lab director(s).
-* Add override capabilities for lab directors, so that they can make/allow reservations longer than the equipment's maximum reservation length, less than 24 hours in advance, etc.
-
-## Minor
-* On the page where date and time are filled in when starting a reservation, catch and return appropriate error when those fields are not completely filled.
-* Change the location field for equipment to a text field, instead of set options (more flexible since location designations are likely to change).
-* Add privilege levels for Sociolinguistics Lab - discuss with lab directors if privileges should be totally separate or have some interaction.
-* Change privileges to checkboxes (instead of distinct categories, can check one box for lab equipment privileges, another for field equipment privileges, etc, to allow for intersections).
-* Possibly implement functionality for quarterly privileges (automatically removed at end of quarter) or guest faculty privileges (limited in time frame and possibly scope of equipment allowed - discuss with lab directors).
-* Add a category of equipment for reserving rooms (currently have 'booth' for recording booths - maybe expand this to be rooms?).
