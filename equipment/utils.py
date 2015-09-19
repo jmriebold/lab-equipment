@@ -123,7 +123,7 @@ def get_calendar(lab, category, name):
                 'Magneto': '7tp04hggfn4fq9am8n4sbgso3k@group.calendar.google.com'
             },
             'oth': '9se5b0fvkvfrn62tuicp4d1h1o@group.calendar.google.com',
-            'default': 'uwphonetics@gmail.com'
+            'default': 'aqi89vl90b8i44uogtojbmnctk@group.calendar.google.com'
         },
         'sociolab': {
             'rec': {
@@ -137,7 +137,7 @@ def get_calendar(lab, category, name):
                 'Caan': 'qa61uu0o9jlne7kphc7aofj6i0@group.calendar.google.com',
                 'Chesterton': '7hnn52hibggqriv6i36uslcavo@group.calendar.google.com'
             },
-            'default': 'uw.socioling@gmail.com'
+            'default': '3qp44cj94aba19alvj997ivrb0@group.calendar.google.com'
         }
     }
 
