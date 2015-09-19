@@ -79,7 +79,8 @@ class Equipment(models.Model):
     max_reservation_length = models.IntegerField(blank=True, null=True)  # maximum allowed reservation in hours
     privilege_level = models.IntegerField(max_length=1, choices=PRIVILEGE_LEVELS, blank=True)
     image = models.ImageField(upload_to='equipment_images/', default='equipment_images/null.jpg')
-    manual = models.FileField(upload_to='equipment_manuals/', blank=True, null=True)
+    manual = models.URLField(blank=True)
+    guide = models.URLField(blank=True)
 
     # can check if is currently available by checking if there's any current reservation
 
