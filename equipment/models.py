@@ -6,13 +6,13 @@ from utils import autoresize_image
 
 # Extend Django's User model with lab-specific fields
 class Status(models.Model):
-    PRIVILEGE_LEVELS = (('1', 'director'), ('2', 'lab member'), ('3', 'student'))
+    PRIVILEGE_LEVELS = ((1, 'director'), (2, 'lab member'), (3, 'student'))
     LAB_MEMBERSHIP = (('b', 'both'), ('s', 'sociolab'), ('p', 'phonlab'), ('n', 'neither'))
 
     user = models.OneToOneField(User)
 
     # default privilege level is student, default lab membership is neither
-    privilege_level = models.CharField(max_length=1, choices=PRIVILEGE_LEVELS, default='3')
+    privilege_level = models.IntegerField(max_length=1, choices=PRIVILEGE_LEVELS, default=3)
     lab_membership = models.CharField(max_length=1, choices=LAB_MEMBERSHIP, default='n')
 
 
@@ -63,8 +63,7 @@ class Equipment(models.Model):
     # equipment has privilege level that says who can check it out
     # this can be checked against a user's privilege level
     # ideally, will implement so can be overridden by lab director
-    PRIVILEGE_LEVELS = (
-    ('1', 'lab user'), ('2', 'field user'), ('3', 'student'), ('4', 'advanced field user'), ('5', 'lab director'),)
+    PRIVILEGE_LEVELS = ((1, 'director'), (2, 'lab member'), (3, 'student'))
 
     name = models.CharField(max_length=200)  # unique name for each piece of equipment
     slug = models.SlugField()
@@ -76,7 +75,7 @@ class Equipment(models.Model):
     location = models.CharField(max_length=10, choices=LOCATION_CHOICES)
     reservable = models.BooleanField()  # whether or not people can reserve/check out this equipment
     max_reservation_length = models.IntegerField(blank=True, null=True)  # maximum allowed reservation in hours
-    privilege_level = models.CharField(max_length=1, choices=PRIVILEGE_LEVELS, blank=True)
+    privilege_level = models.IntegerField(max_length=1, choices=PRIVILEGE_LEVELS, blank=True)
     image = models.ImageField(upload_to='equipment_images/', default='equipment_images/null.jpg')
     manual = models.FileField(upload_to='equipment_manuals/', blank=True, null=True)
 
@@ -123,8 +122,7 @@ class Book(models.Model):
         ('unknown', 'unknown')
     )
 
-    PRIVILEGE_LEVELS = (
-    ('3', 'director only'), ('2', 'lab member or director only'), ('1', 'lab member, director, or student'),)
+    PRIVILEGE_LEVELS = ((1, 'director'), (2, 'lab member'), (3, 'student'))
 
     author = models.CharField(max_length=100)
     title = models.CharField(max_length=100)
@@ -133,7 +131,7 @@ class Book(models.Model):
     location = models.CharField(max_length=10, choices=LOCATION_CHOICES)
     reservable = models.BooleanField()  # whether or not people can reserve/check out this book
     max_reservation_length = models.IntegerField(blank=True, null=True)  # maximum allowed reservation in hours
-    privilege_level = models.CharField(max_length=1, choices=PRIVILEGE_LEVELS, blank=True)
+    privilege_level = models.IntegerField(max_length=1, choices=PRIVILEGE_LEVELS, blank=True)
     image = models.ImageField(upload_to='equipment_images/', default='equipment_images/null.jpg')
 
     def __unicode__(self):
