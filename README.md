@@ -9,7 +9,7 @@ an equipment reservation system for the University of Washington Phonetics and S
 
 # Usage
 ## South
-<b>Important:</b> Whenever changes are made to "equipment" app, run (within the top level lab-equipment repository folder that this README is found in):
+<b>Important:</b> Whenever changes are made to models that will require changes to the database, run (within the top level lab-equipment repository folder that this README is found in):
     
     python manage.py schemamigration equipment --auto
     python manage.py migrate equipment
