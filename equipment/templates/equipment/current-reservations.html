@@ -4,23 +4,23 @@
 
 {% block primary %}
 
-{% if reservations %}
-    {% for reservation in reservations %}
-        {{ reservation.reserved_by }} has a reservation
-        from {{ reservation.start_date }} to {{ reservation.end_date }} for the following equipment:
-        <ul>
-        {% for equipment_piece in reservation.equipment.all %}
-           <li> <a href="{% url 'equip_detail' equipment_piece.slug %}">{{ equipment_piece.name }}</a>
+    {% if reservations %}
+        {% for reservation in reservations %}
+            {{ reservation.reserved_by }} has a reservation
+            from {{ reservation.start_date }} to {{ reservation.end_date }} for the following equipment:
+            <ul>
+                {% for equipment_piece in reservation.equipment.all %}
+                    <li> <a href="{% url 'equip_detail' equipment_piece.slug %}">{{ equipment_piece.name }}</a>
+                {% endfor %}
+            </ul>
+            <p>
         {% endfor %}
-        </ul>
-        <p>
-    {% endfor %}
-{% else %}
-    <p>No current reservations.</p>
-{% endif %}
+    {% else %}
+        <p>No current reservations.</p>
+    {% endif %}
 {% endblock %}
 
 {% block returnlink %}
-<hr>
-<a href="{% url 'index' %}">back to Equipment Reservations main page</a>
+    <hr>
+    <a href="{% url 'index' %}">back to Equipment Reservations main page</a>
 {% endblock %}

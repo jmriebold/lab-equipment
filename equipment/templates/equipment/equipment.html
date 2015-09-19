@@ -4,18 +4,38 @@
 
 {% block primary %}
 
-<table id='equip_list' class='tablesorter'>
-<thead><tr><th data-sorter=false filter=false></th><th>Name</th><th filter-type='ddl'>Category</th><th>Manufacturer</th><th>Model</th><th filter-type='ddl'>Lab</th><th>Use</th></tr></thead>
-<tbody>
-{% for equip,thumbnail in equip_list %}
-    <tr><td><center><img src="{{ thumbnail }}"></center></td><td><a href="{% url 'equip_detail' equip.slug %}">{{ equip.name }}</a></td><td>{{ equip.get_category_display }}</td><td>{{ equip.manufacturer }}</td><td>{{ equip.model }}</td><td>{{ equip.get_lab_display }}</td><td>{{ equip.get_lab_or_field_display }}</td></tr>
-{% endfor %}
-</tbody>
-</table>
+    <table id='equip_list' class='tablesorter'>
+        <thead>
+        <tr>
+            <th data-sorter=false filter=false></th>
+            <th>Name</th>
+            <th filter-type='ddl'>Category</th>
+            <th>Manufacturer</th>
+            <th>Model</th>
+            <th filter-type='ddl'>Lab</th>
+            <th>Use</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for equip,thumbnail in equip_list %}
+            <tr>
+                <td>
+                    <center><img src="{{ thumbnail }}"></center>
+                </td>
+                <td><a href="{% url 'equip_detail' equip.slug %}">{{ equip.name }}</a></td>
+                <td>{{ equip.get_category_display }}</td>
+                <td>{{ equip.manufacturer }}</td>
+                <td>{{ equip.model }}</td>
+                <td>{{ equip.get_lab_display }}</td>
+                <td>{{ equip.get_lab_or_field_display }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 
 {% endblock %}
 
 {% block returnlink %}
-<hr>
-<a href="{% url 'index' %}">back to Equipment Reservations main page</a>
+    <hr>
+    <a href="{% url 'index' %}">back to Equipment Reservations main page</a>
 {% endblock %}

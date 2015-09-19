@@ -4,32 +4,33 @@
 
 {% block primary %}
 
-<script language="JavaScript">
-function AccessDates(){
-    var StartDate = document.getElementById('startDate').value;
-    var EndDate = document.getElementById('endDate').value;
-    if (StartDate != '' && EndDate != '') {
-        var url_mask = "{% url 'reserve_dates' start_date='1234T56' end_date='2345T67' %}".replace(/1234T56/, StartDate.toString()).replace(/2345T67/, EndDate.toString());
-        window.location.href=url_mask;
-    }
-}
-</script>
+    <script language="JavaScript">
+        function AccessDates() {
+            var StartDate = document.getElementById('startDate').value;
+            var EndDate = document.getElementById('endDate').value;
+            if (StartDate != '' && EndDate != '') {
+                var url_mask = "{% url 'reserve_dates' start_date='1234T56' end_date='2345T67' %}".replace(/1234T56/, StartDate.toString()).replace(/2345T67/, EndDate.toString());
+                window.location.href = url_mask;
+            }
+        }
+    </script>
 
-<center>
-{% if error_message %}<p><strong><font color=red>{{ error_message }}</font></strong></p>{% endif %}
-<p>
-<b>When will you be using the equipment?</b>
-<p>
-Start Date and Time: <input type="datetime-local" id="startDate">
-<br>
-End Date and Time: <input type="datetime-local" id="endDate">
-<br>
-<button id="submit" onclick="AccessDates()">Submit</button>
-</p>
-</center>
+    <center>
+        {% if error_message %}<p><strong><font color=red>{{ error_message }}</font></strong></p>{% endif %}
+        <p>
+            <b>When will you be using the equipment?</b>
+
+        <p>
+            Start Date and Time: <input type="datetime-local" id="startDate">
+            <br>
+            End Date and Time: <input type="datetime-local" id="endDate">
+            <br>
+            <button id="submit" onclick="AccessDates()">Submit</button>
+        </p>
+    </center>
 {% endblock %}
 
 {% block returnlink %}
-<hr>
-<a href="{% url 'index' %}">back to Equipment Reservations main page</a>
+    <hr>
+    <a href="{% url 'index' %}">back to Equipment Reservations main page</a>
 {% endblock %}

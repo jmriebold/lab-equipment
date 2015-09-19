@@ -4,36 +4,71 @@
 
 {% block primary %}
 
-<center>
-{% if equip %}
-    {% for each_equip in equip %}
-        <table>
-            <tr><td colspan="3" align=center><b>{{ each_equip.name }}</b></td></tr>
-        <tr><td rowspan="10"><img src="{{ each_equip.image.url }}"></td></tr>
-            <tr><td><b>Lab</b></td><td>{{ each_equip.get_lab_display }}</td></tr>
-            <tr><td><b>Use</b></td><td>{{ each_equip.get_lab_or_field_display }}</td></tr>
-            <tr><td><b>Category</b></td><td>{{ each_equip.get_category_display }}</td></tr>
-            <tr><td><b>Manufacturer</b></td><td>{{ each_equip.manufacturer }}</td></tr>
-            <tr><td><b>Model</b></td><td>{{ each_equip.model }}</td></tr>
-            <tr><td><b>Location</b></td><td>{{ each_equip.get_location_display }}</td></tr>
-            {% if each_equip.manual %}
-                <tr><td><b>Manual</b></td><td><a href="{{ each_equip.manual.url }}">Here</a></td></tr>
-            {% endif %}
-            <tr><td><b>Reservable?</b></td><td>{{ each_equip.reservable }}</td></tr>
-            {% if each_equip.reservable %}
-                <tr><td><b>Max Reservation Length</b></td><td>{{ each_equip.max_reservation_length }} hours</td></tr>
-                <tr><td><b>Privilege Level for Reservation</b></td><td>{{ each_equip.get_privilege_level_display }}</td></tr>
-            {% endif %}
-        </table>
-        <p>
-    {% endfor %}
-{% else %}
-    <p>No equipment is available.</p>
-{% endif %}
-</center>
+    <center>
+        {% if equip %}
+            {% for each_equip in equip %}
+                <table>
+                    <tr>
+                        <td colspan="3" align=center><b>{{ each_equip.name }}</b></td>
+                    </tr>
+                    <tr>
+                        <td rowspan="10"><img src="{{ each_equip.image.url }}"></td>
+                    </tr>
+                    <tr>
+                        <td><b>Lab</b></td>
+                        <td>{{ each_equip.get_lab_display }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Use</b></td>
+                        <td>{{ each_equip.get_lab_or_field_display }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Category</b></td>
+                        <td>{{ each_equip.get_category_display }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Manufacturer</b></td>
+                        <td>{{ each_equip.manufacturer }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Model</b></td>
+                        <td>{{ each_equip.model }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Location</b></td>
+                        <td>{{ each_equip.get_location_display }}</td>
+                    </tr>
+                    {% if each_equip.manual %}
+                        <tr>
+                            <td><b>Manual</b></td>
+                            <td><a href="{{ each_equip.manual.url }}">Here</a></td>
+                        </tr>
+                    {% endif %}
+                    <tr>
+                        <td><b>Reservable?</b></td>
+                        <td>{{ each_equip.reservable }}</td>
+                    </tr>
+                    {% if each_equip.reservable %}
+                        <tr>
+                            <td><b>Max Reservation Length</b></td>
+                            <td>{{ each_equip.max_reservation_length }} hours</td>
+                        </tr>
+                        <tr>
+                            <td><b>Privilege Level for Reservation</b></td>
+                            <td>{{ each_equip.get_privilege_level_display }}</td>
+                        </tr>
+                    {% endif %}
+                </table>
+                <p>
+            {% endfor %}
+        {% else %}
+            <p>No equipment is available.</p>
+        {% endif %}
+    </center>
 {% endblock %}
 
 {% block returnlink %}
-<hr>
-<a href="{% url 'index' %}">back to Equipment Reservations main page</a> | <a href="{% url 'all_equipment' %}">back to list of all equipment</a>
+    <hr>
+    <a href="{% url 'index' %}">back to Equipment Reservations main page</a> |
+    <a href="{% url 'all_equipment' %}">back to list of all equipment</a>
 {% endblock %}

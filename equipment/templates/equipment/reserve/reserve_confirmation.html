@@ -3,35 +3,56 @@
 {% block title %}Confirm Equipment Reservation{% endblock %}
 
 {% block primary %}
-<p>
-Please confirm the details of your reservation below.  Your reservation will not be made until you click "Confirm Reservation."
-</p>
-<p>
-<b>The following equipment will be reserved for {{ netid }} from {{ start_date }} to {{ end_date }}:</b>
-</p>
-<table>
-<tr><th><b>Name</b></th><th><b>Category</th><th><b>Manufacturer</b></th><th><b>Model</b></th><th><b>Lab</b></th><th><b>Use</b></th></tr>
-{% for equip in equipment %}
-    <tr><td><a href="{% url 'equip_detail' equip.slug %}">{{ equip.name }}</a></td><td>{{ equip.get_category_display }}</td><td>{{ equip.manufacturer }}</td><td>{{ equip.model }}</td><td>{{ equip.get_lab_display }}</td><td>{{ equip.get_lab_or_field_display }}</td></tr>
-{% endfor %}
-</table>
-<br>
-<center>
-<form action="{% url 'make_reservation' %}" method="post">
-{% csrf_token %}
-<input type="hidden" name="start_date_string" value={{ start_date_string }}>
-<input type="hidden" name="end_date_string" value={{ end_date_string }}>
-<input type="hidden" name="equipment_string" value={{ equipment_string }}>
-<table>
-<tr><td align="right"><b>Reservation Purpose (required):</b></td><td><textarea rows="4" cols="50" name="purpose"></textarea></td></tr>
-<tr><td align="right"><b>If your reservation is for a UW course, please specify which one:</b></td><td><textarea rows="1" cols="50" name="course"></textarea></td></tr>
-</table>
-<input type="submit" value="Confirm Reservation">
-</form>
+    <p>
+        Please confirm the details of your reservation below. Your reservation will not be made until you click "Confirm
+        Reservation."
+    </p>
+    <p>
+        <b>The following equipment will be reserved for {{ netid }} from {{ start_date }} to {{ end_date }}:</b>
+    </p>
+    <table>
+        <tr>
+            <th><b>Name</b></th>
+            <th><b>Category</th>
+            <th><b>Manufacturer</b></th>
+            <th><b>Model</b></th>
+            <th><b>Lab</b></th>
+            <th><b>Use</b></th>
+        </tr>
+        {% for equip in equipment %}
+            <tr>
+                <td><a href="{% url 'equip_detail' equip.slug %}">{{ equip.name }}</a></td>
+                <td>{{ equip.get_category_display }}</td>
+                <td>{{ equip.manufacturer }}</td>
+                <td>{{ equip.model }}</td>
+                <td>{{ equip.get_lab_display }}</td>
+                <td>{{ equip.get_lab_or_field_display }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <br>
+    <center>
+    <form action="{% url 'make_reservation' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="start_date_string" value={{ start_date_string }}>
+        <input type="hidden" name="end_date_string" value={{ end_date_string }}>
+        <input type="hidden" name="equipment_string" value={{ equipment_string }}>
+        <table>
+            <tr>
+                <td align="right"><b>Reservation Purpose (required):</b></td>
+                <td><textarea rows="4" cols="50" name="purpose"></textarea></td>
+            </tr>
+            <tr>
+                <td align="right"><b>If your reservation is for a UW course, please specify which one:</b></td>
+                <td><textarea rows="1" cols="50" name="course"></textarea></td>
+            </tr>
+        </table>
+        <input type="submit" value="Confirm Reservation">
+    </form>
 
 {% endblock %}
 
 {% block returnlink %}
-<hr>
-<a href="{% url 'index' %}">back to Equipment Reservations main page</a>
+    <hr>
+    <a href="{% url 'index' %}">back to Equipment Reservations main page</a>
 {% endblock %}

@@ -1,55 +1,78 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <html lang="en">
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <title>Phonetics Lab | Department of Linguistics | University of Washington</title>
-        <meta name="description" content="The Phonetics Lab at UW is located in Padelford Hall, Room A-216 on the campus of UW Seattle.">
-        <meta name="keywords" content="Linguistics, Ling, UW, Phonetics, University, Washington, Phonology, Sociolinguistics, Richard, Wright, Lab, Laboratory, Socio">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Phonetics Lab | Department of Linguistics | University of Washington</title>
+    <meta name="description"
+          content="The Phonetics Lab at UW is located in Padelford Hall, Room A-216 on the campus of UW Seattle.">
+    <meta name="keywords"
+          content="Linguistics, Ling, UW, Phonetics, University, Washington, Phonology, Sociolinguistics, Richard, Wright, Lab, Laboratory, Socio">
 
-        <link rel="shortcut icon" href="favicon.ico">
-        <script type="text/javascript" charset="utf-8" src="/static/template/jquery.js"></script>
-        <script type="text/javascript" charset="utf-8" src="/static/template/emailScrambler2.js"></script>
-        <script type="text/javascript" charset="utf-8" src="/static/template/picnet.table.filter.min.js"></script>
-        <script type="text/javascript" charset="utf-8" src="/static/template/jquery.tablesorter.js"></script>
-        <script type="text/javascript" charset="utf-8">
-            $(document).ready(function(){
-                emailScrambler2();
-                $('#equip_list').tableFilter();
-                $('#equip_list').tablesorter();
-            });
-        </script>
+    <link rel="shortcut icon" href="favicon.ico">
+    <script type="text/javascript" charset="utf-8" src="/static/template/jquery.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/static/template/emailScrambler2.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/static/template/picnet.table.filter.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/static/template/jquery.tablesorter.js"></script>
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function () {
+            emailScrambler2();
+            $('#equip_list').tableFilter();
+            $('#equip_list').tablesorter();
+        });
+    </script>
 
-        <link href="/static/template/uwphonlab.css" rel="stylesheet" type="text/css" />
+    <link href="/static/template/uwphonlab.css" rel="stylesheet" type="text/css"/>
 
-    </head>
+</head>
 
-    <body>
-    <div id="wrapper">
+<body>
+<div id="wrapper">
 
-        <div id="header">
-            <div id="logo"><a href="http://www.washington.edu/"><img id="uwLogo" src="/static/template/images/UW.png" /></a></div>
+    <div id="header">
+        <div id="logo"><a href="http://www.washington.edu/"><img id="uwLogo" src="/static/template/images/UW.png"/></a>
+        </div>
+    </div>
+
+    <div id="menu">
+        <ul>
+            <li class="menuItem"><a href="index.htm">Home</a></li>
+            <li class="menuItem"><a href="members.htm">Lab Members</a></li>
+            <li class="menuItem"><a href="projects.htm">Projects</a></li>
+            <li class="menuItem"><a href="pubs.htm">Publications</a></li>
+            <li class="menuItem"><a href="resources.htm">Resources</a></li>
+            <li class="menuItem"><a href="equipment.htm">Lab Equipment Reservations</a></li>
+            <li><a href="links.htm">Links</a></li>
+        </ul>
+    </div>
+
+    <div id="contentWrapper">
+
+        <div id="leftMargin">&nbsp;</div>
+
+        <div id="rightMargin">&nbsp;</div>
+
+        <div id="mainContent"><p class="heading">{% block title %}{% endblock %}</p>
+            {% block primary %} {% endblock %}
+            {% block returnlink %} {% endblock %}
         </div>
 
-        <div id="menu"><ul><li class="menuItem"><a href="index.htm">Home</a></li><li class="menuItem"><a href="members.htm">Lab Members</a></li><li class="menuItem"><a href="projects.htm">Projects</a></li><li class="menuItem"><a href="pubs.htm">Publications</a></li><li class="menuItem"><a href="resources.htm">Resources</a></li><li class="menuItem"><a href="equipment.htm">Lab Equipment Reservations</a></li><li><a href="links.htm">Links</a></li></ul></div>
+        <div id="footerImage"><img src="/static/template/images/cherry.jpg"/></div>
 
-        <div id="contentWrapper">
+    </div>
 
-            <div id="leftMargin">&nbsp;</div>
+    <div id="footer">
+        <ul>
+            <li class="menuItem"><a href="http://depts.washington.edu/phonlab/">Phonetics Laboratory</a></li>
+            <li class="menuItem"><a href="http://depts.washington.edu/lingweb/">Department of Linguistics</a></li>
+            <li class="menuItem"><a href="http://www.washington.edu/">University of Washington</a></li>
+            <li class="menuItem">Box 352524 Seattle, WA 98195-2524</li>
+            <li class="menuItem">Phone: (206) 543-2046</li>
+            <li class="menuItem">Fax: (206) 685-7978</li>
+            <li><span name="mailScr">linglab[AT uw DOT edu]</span></li>
+        </ul>
+    </div>
 
-            <div id="rightMargin">&nbsp;</div>
-
-            <div id="mainContent"><p class="heading">{% block title %}{% endblock %}</p>
-                {% block primary %} {% endblock %}
-                {% block returnlink %} {% endblock %}
-            </div>
-
-            <div id="footerImage"><img src="/static/template/images/cherry.jpg" /></div>
-
-        </div>
-
-        <div id="footer"><ul><li class="menuItem"><a href="http://depts.washington.edu/phonlab/">Phonetics Laboratory</a></li><li class="menuItem"><a href="http://depts.washington.edu/lingweb/">Department of Linguistics</a></li><li class="menuItem"><a href="http://www.washington.edu/">University of Washington</a></li><li class="menuItem">Box 352524 Seattle, WA 98195-2524</li><li class="menuItem">Phone: (206) 543-2046</li><li class="menuItem">Fax: (206) 685-7978</li><li><span name="mailScr">linglab[AT uw DOT edu]</span></li></ul></div>
-
-        </div>
-    </body>
+</div>
+</body>
 </html>

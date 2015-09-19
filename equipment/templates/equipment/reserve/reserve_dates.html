@@ -3,58 +3,105 @@
 {% block title %}Reserve Equipment{% endblock %}
 
 {% block primary %}
-<!--<script type="text/javascript" src="/static/template/picnet.table.filter.min.js"></script>
-<script type="text/javascript" src="/static/template/jquery.tablesorter.js"></script>
-<script type="text/javascript">
-    $(document).ready(function() {
-        $('#equip_list').tableFilter();
-        $('#equip_list').tablesorter();
-    });
-</script>
--->
-<script language="JavaScript">
-function MakeReservation(){
-    // pull out all checked ids
-    var equip = document.body.getElementsByTagName("input");
-    var selected_equip = new Array();
-    for (var i=0;i<equip.length;i++)
-        {
-        if (equip[i].checked)
-            {
-            selected_equip.push(equip[i].id);
+    <!--<script type="text/javascript" src="/static/template/picnet.table.filter.min.js"></script>
+    <script type="text/javascript" src="/static/template/jquery.tablesorter.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#equip_list').tableFilter();
+            $('#equip_list').tablesorter();
+        });
+    </script>
+    -->
+    <script language="JavaScript">
+        function MakeReservation() {
+            // pull out all checked ids
+            var equip = document.body.getElementsByTagName("input");
+            var selected_equip = new Array();
+            for (var i = 0; i < equip.length; i++) {
+                if (equip[i].checked) {
+                    selected_equip.push(equip[i].id);
+                }
             }
+            var selected_equip = selected_equip.join('-');
+            // redirect to confirmation page with selected equipment
+            var url_mask = "{% url 'reserve_confirmation' start_date=start_date end_date=end_date equipment='1-2' %}".replace(/1-2/, selected_equip);
+            window.location.href = url_mask;
         }
-    var selected_equip = selected_equip.join('-');
-    // redirect to confirmation page with selected equipment
-    var url_mask = "{% url 'reserve_confirmation' start_date=start_date end_date=end_date equipment='1-2' %}".replace(/1-2/, selected_equip);
-    window.location.href=url_mask;
-}
-</script>
+    </script>
 
-<table id='equip_list' class='tablesorter'>
-<thead><tr><th filter=false>Reserve this equipment</th><th>Name</th><th filter-type='ddl'>Category</th><th>Manufacturer</th><th>Model</th><th filter-type='ddl'>Lab</th><th>Use</th><th filter-type='ddl'>Available?</th></tr></thead>
-<tbody>
-{% for equip in available_equipment %}
-    <tr><td><center><input type="checkbox" id={{ equip.id }}></center></td><td><a href="{% url 'equip_detail' equip.slug %}">{{ equip.name }}</a></td><td>{{ equip.get_category_display }}</td><td>{{ equip.manufacturer }}</td><td>{{ equip.model }}</td><td>{{ equip.get_lab_display }}</td><td>{{ equip.get_lab_or_field_display }}</td><td>yes</td></tr>
-{% endfor %}
-{% for equip in unavailable_equipment %}
-    <tr class='unavailable'><td></td><td><a href="{% url 'equip_detail' equip.slug %}">{{ equip.name }}</a></td><td>{{ equip.get_category_display }}</td><td>{{ equip.manufacturer }}</td><td>{{ equip.model }}</td><td>{{ equip.get_lab_display }}</td><td>{{ equip.get_lab_or_field_display }}</td><td>no - already reserved</td></tr>
-{% endfor %}
-{% for equip in nonreservable_equipment %}
-    <tr class='unavailable'><td></td><td><a href="{% url 'equip_detail' equip.slug %}">{{ equip.name }}</a></td><td>{{ equip.get_category_display }}</td><td>{{ equip.manufacturer }}</td><td>{{ equip.model }}</td><td>{{ equip.get_lab_display }}</td><td>{{ equip.get_lab_or_field_display }}</td><td>no - can't be reserved</td></tr>
-{% endfor %}
-{% for equip in shorter_reservation_equipment %}
-    <tr class="unavailable"><td></td><td><a href="{% url 'equip_detail' equip.slug %}">{{ equip.name }}</a></td><td>{{ equip.get_category_display }}</td><td>{{ equip.manufacturer }}</td><td>{{ equip.model }}</td><td>{{ equip.get_lab_display }}</td><td>{{ equip.get_lab_or_field_display }}</td><td>no - maximum reservation length is less than time span selected</td></tr>
-{% endfor %}
-</tbody>
-</table>
-<br>
-<center>
-<button id="reserve" onclick="MakeReservation()">Make Reservation</button>
-</center>
+    <table id='equip_list' class='tablesorter'>
+        <thead>
+        <tr>
+            <th filter=false>Reserve this equipment</th>
+            <th>Name</th>
+            <th filter-type='ddl'>Category</th>
+            <th>Manufacturer</th>
+            <th>Model</th>
+            <th filter-type='ddl'>Lab</th>
+            <th>Use</th>
+            <th filter-type='ddl'>Available?</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for equip in available_equipment %}
+            <tr>
+                <td>
+                    <center><input type="checkbox" id={{ equip.id }}></center>
+                </td>
+                <td><a href="{% url 'equip_detail' equip.slug %}">{{ equip.name }}</a></td>
+                <td>{{ equip.get_category_display }}</td>
+                <td>{{ equip.manufacturer }}</td>
+                <td>{{ equip.model }}</td>
+                <td>{{ equip.get_lab_display }}</td>
+                <td>{{ equip.get_lab_or_field_display }}</td>
+                <td>yes</td>
+            </tr>
+        {% endfor %}
+        {% for equip in unavailable_equipment %}
+            <tr class='unavailable'>
+                <td></td>
+                <td><a href="{% url 'equip_detail' equip.slug %}">{{ equip.name }}</a></td>
+                <td>{{ equip.get_category_display }}</td>
+                <td>{{ equip.manufacturer }}</td>
+                <td>{{ equip.model }}</td>
+                <td>{{ equip.get_lab_display }}</td>
+                <td>{{ equip.get_lab_or_field_display }}</td>
+                <td>no - already reserved</td>
+            </tr>
+        {% endfor %}
+        {% for equip in nonreservable_equipment %}
+            <tr class='unavailable'>
+                <td></td>
+                <td><a href="{% url 'equip_detail' equip.slug %}">{{ equip.name }}</a></td>
+                <td>{{ equip.get_category_display }}</td>
+                <td>{{ equip.manufacturer }}</td>
+                <td>{{ equip.model }}</td>
+                <td>{{ equip.get_lab_display }}</td>
+                <td>{{ equip.get_lab_or_field_display }}</td>
+                <td>no - can't be reserved</td>
+            </tr>
+        {% endfor %}
+        {% for equip in shorter_reservation_equipment %}
+            <tr class="unavailable">
+                <td></td>
+                <td><a href="{% url 'equip_detail' equip.slug %}">{{ equip.name }}</a></td>
+                <td>{{ equip.get_category_display }}</td>
+                <td>{{ equip.manufacturer }}</td>
+                <td>{{ equip.model }}</td>
+                <td>{{ equip.get_lab_display }}</td>
+                <td>{{ equip.get_lab_or_field_display }}</td>
+                <td>no - maximum reservation length is less than time span selected</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <center>
+        <button id="reserve" onclick="MakeReservation()">Make Reservation</button>
+    </center>
 {% endblock %}
 
 {% block returnlink %}
-<hr>
-<a href="{% url 'index' %}">back to Equipment Reservations main page</a>
+    <hr>
+    <a href="{% url 'index' %}">back to Equipment Reservations main page</a>
 {% endblock %}
