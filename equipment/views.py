@@ -149,8 +149,12 @@ def make_reservation(request):
     start_date_string = request.POST['start_date_string']
     end_date_string = request.POST['end_date_string']
     equipment_string = request.POST['equipment_string']
-    purpose = request.POST['purpose']
+    purpose = request.POST['purpose'].strip()
     course = request.POST['course']
+
+    if purpose == '' or len(purpose) < 3:
+        return render(request, 'equipment/reserve/index.html', {
+                'error_message': "Invalid purpose! You must give a reason for checking out the equipment."})
 
     # Get current user, name, and email
     remote_user = request.environ.get('REMOTE_USER')
