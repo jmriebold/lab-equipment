@@ -183,9 +183,6 @@ def make_reservation(request):
     reservation.save()
     reservation.equipment.add(*equipment)
 
-    add_to_calendar(name, email, equipment, start_date, end_date, purpose)
-    send_confirmation(name, email, equipment, start_date, end_date)
-
     return HttpResponseRedirect(reverse('done'))
 
 

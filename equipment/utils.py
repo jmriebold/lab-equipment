@@ -41,11 +41,6 @@ def create_thumbnail(image):
     return thumbnail
 
 
-# Convert lab code to lab name
-def get_lab(lab):
-    return lab.replace('P', 'phonlab').replace('S', 'sociolab')
-
-
 def get_equip_details(equipment):
     equipment = str(equipment)
     # Strip formatting
@@ -65,8 +60,7 @@ def get_equip_details(equipment):
 def add_to_calendar(name, email, equipment, start_date, end_date, purpose):
     start_date = str(start_date).replace(' ', 'T')
     end_date = str(end_date).replace(' ', 'T')
-
-    equip_cat, equip_name, equip_model, equip_lab = get_equip_details(equipment)
+    equip_lab = equipment.lab.replace('P', 'phonlab').replace('S', 'sociolab')
 
     service_account_email = '275676223429-p0g1vpujgfric1gjoo020e898lhui6pa@developer.gserviceaccount.com'
 
@@ -87,7 +81,7 @@ def add_to_calendar(name, email, equipment, start_date, end_date, purpose):
 
     # Define event
     event = {
-        'summary': name + ': ' + equip_model + ' (' + equip_lab + ')',
+        'summary': name + ': ' + equipment.model + ' (' + equip_lab + ')',
         'description': purpose + '\n\nContact: ' + name + ' (' + email + ')',
         'start': {
             'dateTime': start_date,
@@ -100,10 +94,12 @@ def add_to_calendar(name, email, equipment, start_date, end_date, purpose):
     }
 
     # Find calendar
-    cal_id = get_calendar(equip_lab, equip_cat, equip_name)
+    cal_id = get_calendar(equip_lab, equipment.category, equipment.name)
 
     # Save to calendar
     event = service.events().insert(calendarId=cal_id, body=event).execute()
+
+    return event
 
 
 # Get the ID of the calendar for a piece of equipment
@@ -171,12 +167,15 @@ def send_email(recipient, message):
 
 
 # Send a confirmation email on successful reservation
-def send_confirmation(recipient, email, equipment, start_date, end_date):
-    equip_cat, equip_name, equip_model, equip_lab = get_equip_details(equipment)
+def send_confirmation(recipient, email, equipment, equip_lab, start_date, end_date):
+    if len(equipment) > 1:
+        equipment = ', '.join(equipment)
+    else:
+        equipment = equipment[0]
 
     subject = 'Reservation Confirmation'
-    text = 'Dear ' + recipient + '\nYou have reserved %s (%s) from the %s from %s to %s.' % (
-        equip_name, equip_model, equip_lab, start_date, end_date)
+    text = 'Dear ' + recipient + '\nYou have reserved %s from the %s from %s to %s.' % (
+        equipment, equip_lab, start_date, end_date)
     message = 'Subject: %s\n\n%s' % (subject, text)
 
     send_email(email, message)

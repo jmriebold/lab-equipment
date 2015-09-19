@@ -1,7 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-from utils import autoresize_image
+from django.db.models.signals import m2m_changed
+from django.dispatch import receiver
+from utils import autoresize_image, add_to_calendar, send_confirmation
 
 
 # Extend Django's User model with lab-specific fields
@@ -160,6 +162,36 @@ class Reservation(models.Model):
     course = models.CharField(max_length=20, blank=True)  # optional, if it's being used for a course, which course
     start_date = models.DateTimeField()  # when the equipment is checked out
     end_date = models.DateTimeField()  # when the equipment will be returned
+    calendar_event = models.CharField(max_length=500, default='', editable=False)  # The event ID on the Google Calendar
 
     def __unicode__(self):
         return u"Reservation by %s from %s to %s" % (self.reserved_by, self.start_date, self.end_date)
+
+
+# Add/remove calendar event(s) and send confirmation email when equipment is added/removed
+@receiver(m2m_changed, sender=Reservation.equipment.through)
+def tasks(sender, instance, action, **kwargs):
+    if action == 'post_add':
+        # Get name and email
+        name = instance.reserved_by.get_full_name()
+        if name == '':
+            name = str(self.reserved_by)
+        email = instance.reserved_by.email
+        if email == '':
+            email == str(instance.reserved_by) + '@uw.edu'
+
+        events = ''
+        equipment_list= []
+        equip_lab = instance.equipment.all()[0].lab.replace('P', 'phonlab').replace('S', 'sociolab')
+
+        # Add calendar events for each equipment, store names
+        for i, equip in enumerate(instance.equipment.all()):
+            event = add_to_calendar(name, email, equip, instance.start_date, instance.end_date, instance.purpose)
+            events += str(event['id']) + '-'
+
+            equipment_list.append('%s (%s %s)' % (equip.name, equip.manufacturer, equip.model))
+
+        instance.calendar_event = events
+        instance.save()
+
+        send_confirmation(name, email, equipment_list, equip_lab, instance.start_date, instance.end_date)
