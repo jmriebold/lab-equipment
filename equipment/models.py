@@ -171,11 +171,5 @@ class Reservation(models.Model):
     start_date = models.DateTimeField()  # when the equipment is checked out
     end_date = models.DateTimeField()  # when the equipment will be returned
 
-    def clean(self):
-        self.purpose = self.purpose.strip()
-
-        if self.purpose == '' or len(self.purpose) < 3:
-            raise ValidationError("You must give a reason for checking out the equipment.")
-
     def __unicode__(self):
         return u"Reservation by %s from %s to %s" % (self.reserved_by, self.start_date, self.end_date)

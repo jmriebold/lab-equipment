@@ -8,8 +8,10 @@
 function AccessDates(){
     var StartDate = document.getElementById('startDate').value;
     var EndDate = document.getElementById('endDate').value;
-    var url_mask = "{% url 'reserve_dates' start_date='1234T56' end_date='2345T67' %}".replace(/1234T56/, StartDate.toString()).replace(/2345T67/, EndDate.toString());
-    window.location.href=url_mask;
+    if (StartDate != '' && EndDate != '') {
+        var url_mask = "{% url 'reserve_dates' start_date='1234T56' end_date='2345T67' %}".replace(/1234T56/, StartDate.toString()).replace(/2345T67/, EndDate.toString());
+        window.location.href=url_mask;
+    }
 }
 </script>
 
