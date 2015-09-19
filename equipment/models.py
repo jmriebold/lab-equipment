@@ -8,13 +8,13 @@ from utils import autoresize_image, add_to_calendar, send_confirmation
 
 # Extend Django's User model with lab-specific fields
 class Status(models.Model):
-    PRIVILEGE_LEVELS = ((1, 'director'), (2, 'lab member'), (3, 'student'))
+    PRIVILEGE_LEVELS = ((1, 'director'), (2, 'lab member'), (3, 'student'), (4, 'none'))
     LAB_MEMBERSHIP = (('b', 'both'), ('s', 'sociolab'), ('p', 'phonlab'), ('n', 'neither'))
 
     user = models.OneToOneField(User)
 
     # default privilege level is student, default lab membership is neither
-    privilege_level = models.IntegerField(max_length=1, choices=PRIVILEGE_LEVELS, default=3)
+    privilege_level = models.IntegerField(max_length=1, choices=PRIVILEGE_LEVELS, default=4)
     lab_membership = models.CharField(max_length=1, choices=LAB_MEMBERSHIP, default='n')
 
 
