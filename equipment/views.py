@@ -160,8 +160,6 @@ def make_reservation(request):
         name = user.split('@')[0]
     email = str(user)
 
-    # add something to make sure there is text for the reservation purpose
-
     # convert strings to objects
     start_date, start_time = start_date_string.split('T')
     year, month, day = [int(x) for x in start_date.split('-')]
