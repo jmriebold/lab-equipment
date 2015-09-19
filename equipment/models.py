@@ -4,24 +4,16 @@ from django.core.exceptions import ValidationError
 from utils import autoresize_image
 
 
-# Going to use Django's Users class
-#
-# This class is for people who can check out equipment.
-# Will update with different privilege levels maybe.
-# class Person(models.Model):
-#    # my options for privilege levels
-#    PRIVILEGE_LEVELS = ((3,'director'),(2,'lab member'),(1,'student'),)
-#
-#    netid = models.CharField(max_length=50)
-#    email = models.EmailField()
-#    first_name = models.CharField(max_length=50)
-#    last_name = models.CharField(max_length=50)
-#    department = models.CharField(max_length=50)
-#    # default privilege level as student, will need approval from director to change to 2 or 3
-#    privilege_level = models.CharField(max_length=1, choices=PRIVILEGE_LEVELS, default=1) 
-#
-#    def __unicode__(self):
-#        return self.netid
+# Extend Django's User model with lab-specific fields
+class Status(models.Model):
+    PRIVILEGE_LEVELS = (('1', 'director'), ('2', 'lab member'), ('3', 'student'))
+    LAB_MEMBERSHIP = (('b', 'both'), ('s', 'sociolab'), ('p', 'phonlab'), ('n', 'neither'))
+
+    user = models.OneToOneField(User)
+
+    # default privilege level is student, default lab membership is neither
+    privilege_level = models.CharField(max_length=1, choices=PRIVILEGE_LEVELS, default='3')
+    lab_membership = models.CharField(max_length=1, choices=LAB_MEMBERSHIP, default='n')
 
 
 # This class is for all the equipment in the lab.
