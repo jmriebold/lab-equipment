@@ -23,7 +23,7 @@
                 }
             }
             var selected_equip = selected_equip.join('-');
-            if (select_equip !== '-') {
+            if (selected_equip !== '') {
                 // redirect to confirmation page with selected equipment
                 var url_mask = "{% url 'reserve_confirmation' start_date=start_date end_date=end_date equipment='1-2' %}".replace(/1-2/, selected_equip);
                 window.location.href = url_mask;
