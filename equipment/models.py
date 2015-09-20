@@ -80,7 +80,8 @@ class Equipment(models.Model):
     guide = models.URLField(blank=True)
 
     def __unicode__(self):
-        return u"%s: %s %s (%s)" % (self.name, self.manufacturer, self.model, self.lab)
+        return u"%s: %s %s (%s)" % (
+        self.name, self.manufacturer, self.model, self.lab.replace('P', 'phonlab').replace('S', 'sociolab'))
 
     def clean(self):
         # max reservation length and privilege level required if reservable
@@ -187,7 +188,7 @@ def tasks(sender, instance, action, **kwargs):
             email == str(instance.reserved_by) + '@uw.edu'
 
         events = ''
-        equipment_list= []
+        equipment_list = []
         equip_lab = instance.equipment.all()[0].lab.replace('P', 'phonlab').replace('S', 'sociolab')
 
         # Add calendar events for each equipment, store names
