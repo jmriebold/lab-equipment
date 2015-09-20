@@ -192,6 +192,7 @@ def tasks(sender, instance, action, **kwargs):
 
             equipment_list.append('%s (%s %s)' % (equip.name, equip.manufacturer, equip.model))
 
+        # Save calendar event IDs to model
         instance.calendar_event = events
         instance.save()
 
