@@ -5,6 +5,8 @@
 
 import re
 import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 from PIL import Image
 from django.conf import settings
@@ -155,8 +157,6 @@ def send_email(recipient, message):
     with open('/home/calendar/email_account.txt', 'r') as f:
         password = f.readline()
 
-    message = 'From: %s\n%s' % ('UW Linguistics Equipment Checkout', message)
-
     # Login to server and send email
     server = smtplib.SMTP('smtp.gmail.com:587')
     server.ehlo()
@@ -173,9 +173,27 @@ def send_confirmation(recipient, email, equipment, equip_lab, start_date, end_da
     else:
         equipment = equipment[0]
 
-    subject = 'Reservation Confirmation'
-    text = 'Dear ' + recipient + '\nYou have reserved %s from the %s from %s to %s.' % (
-        equipment, equip_lab, start_date, end_date)
-    message = 'Subject: %s\n\n%s' % (subject, text)
+    # Create message container
+    message = MIMEMultipart('alternative')
+    message['Subject'] = "Reservation Confirmation"
+    message['From'] = 'UW Linguistics Equipment Checkout'
 
-    send_email(email, message)
+    # Create HTML message body
+    html = """\
+    <html>
+      <head></head>
+      <body>
+        <p>Dear %s,<br>
+           You have reserved %s from the %s from %s to %s.<br><br>
+           For links to equipment manuals and guides, see the <a href="https://zeos.ling.washington.edu/equipment-reservations/equipment/all-equipment">equipment details page</a>.<br><br>
+           This is an automated email. If you have any questions or issues, please contact the lab SA or the requisite lab director.
+        </p>
+      </body>
+    </html>
+    """ % (recipient, equipment, equip_lab, start_date, end_date)
+
+    html = MIMEText(html, 'html')
+
+    message.attach(html)
+
+    send_email(email, message.as_string())
