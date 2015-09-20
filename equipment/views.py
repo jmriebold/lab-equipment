@@ -54,9 +54,13 @@ def current_reservations(request):
 
 # Display user's reservations
 def your_reservations(request):
-    # change this to include only the user's reservations
-    past_reservations = Reservation.objects.filter(end_date__lt=datetime.datetime.now()).order_by('start_date')
-    current_reservations = Reservation.objects.exclude(end_date__lt=datetime.datetime.now()).order_by('start_date')
+    remote_user = request.environ.get('REMOTE_USER')
+    user = User.objects.get(username__exact=remote_user)
+
+    past_reservations = Reservation.objects.filter(reserved_by=user).filter(
+        end_date__lt=datetime.datetime.now()).order_by('start_date')
+    current_reservations = Reservation.objects.filter(reserved_by=user).exclude(
+        end_date__lt=datetime.datetime.now()).order_by('start_date')
     context = {'past_reservations': past_reservations, 'current_reservations': current_reservations}
 
     return render(request, 'equipment/your-reservations.html', context)
@@ -154,7 +158,7 @@ def make_reservation(request):
 
     if purpose == '' or len(purpose) < 3:
         return render(request, 'equipment/reserve/index.html', {
-                'error_message': "Invalid purpose! You must give a reason for checking out the equipment."})
+            'error_message': "Invalid purpose! You must give a reason for checking out the equipment."})
 
     # Get current user, name, and email
     remote_user = request.environ.get('REMOTE_USER')
