@@ -91,12 +91,8 @@ def get_calendar(lab, category, name):
     return calendar
 
 
-# Add reservation to Google Calendar
-def add_to_calendar(name, email, equipment, start_date, end_date, purpose):
-    start_date = str(start_date).replace(' ', 'T')
-    end_date = str(end_date).replace(' ', 'T')
-    equip_lab = equipment.lab.replace('P', 'phonlab').replace('S', 'sociolab')
-
+# Create Google Calendar service
+def create_service():
     service_account_email = '275676223429-p0g1vpujgfric1gjoo020e898lhui6pa@developer.gserviceaccount.com'
 
     with open('/home/calendar/privatekey.pem') as f:
@@ -113,6 +109,17 @@ def add_to_calendar(name, email, equipment, start_date, end_date, purpose):
     http = httplib2.Http()
     http = credentials.authorize(http)
     service = discovery.build('calendar', 'v3', http=http)
+
+    return service
+
+
+# Add reservation to Google Calendar
+def add_to_calendar(name, email, equipment, start_date, end_date, purpose):
+    start_date = str(start_date).replace(' ', 'T')
+    end_date = str(end_date).replace(' ', 'T')
+    equip_lab = equipment.lab.replace('P', 'phonlab').replace('S', 'sociolab')
+
+    service = create_service()
 
     # Define event
     event = {
