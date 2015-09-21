@@ -14,7 +14,7 @@ class Status(models.Model):
     user = models.OneToOneField(User)
 
     # default privilege level is student, default lab membership is neither
-    privilege_level = models.IntegerField(max_length=1, choices=PRIVILEGE_LEVELS, default=4)
+    privilege_level = models.IntegerField(choices=PRIVILEGE_LEVELS, default=4)
     lab_membership = models.CharField(max_length=1, choices=LAB_MEMBERSHIP, default='n')
 
 
@@ -74,7 +74,7 @@ class Equipment(models.Model):
     status = models.CharField(max_length=2, choices=STATUS, blank=False, default='ok')
     reservable = models.BooleanField()  # whether or not people can reserve/check out this equipment
     max_reservation_length = models.IntegerField(blank=True, null=True)  # maximum allowed reservation in hours
-    privilege_level = models.IntegerField(max_length=1, choices=PRIVILEGE_LEVELS, blank=True)
+    privilege_level = models.IntegerField(choices=PRIVILEGE_LEVELS, blank=True)
     image = models.ImageField(upload_to='equipment_images/', default='equipment_images/null.jpg')
     manual = models.URLField(blank=True)
     guide = models.URLField(blank=True)
@@ -136,7 +136,7 @@ class Book(models.Model):
     status = models.CharField(max_length=2, choices=STATUS, blank=False, default='ok')
     reservable = models.BooleanField()  # whether or not people can reserve/check out this book
     max_reservation_length = models.IntegerField(blank=True, null=True)  # maximum allowed reservation in hours
-    privilege_level = models.IntegerField(max_length=1, choices=PRIVILEGE_LEVELS, blank=True)
+    privilege_level = models.IntegerField(choices=PRIVILEGE_LEVELS, blank=True)
     image = models.ImageField(upload_to='equipment_images/', default='equipment_images/null.jpg')
 
     def __unicode__(self):
