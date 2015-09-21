@@ -126,7 +126,7 @@ class Book(models.Model):
 
     PRIVILEGE_LEVELS = ((1, 'director'), (2, 'lab member'), (3, 'student'))
 
-    STATUS = (('ok', 'OK'), ('ls', 'lost'), ('dm', 'damaged'))
+    STATUS = (('ok', 'OK'), ('ls', 'lost'), ('br', 'broken'))
 
     author = models.CharField(max_length=100)
     title = models.CharField(max_length=100)
@@ -170,6 +170,7 @@ class Reservation(models.Model):
     start_date = models.DateTimeField()  # when the equipment is checked out
     end_date = models.DateTimeField()  # when the equipment will be returned
     calendar_event = models.CharField(max_length=500, default='', editable=False)  # The event ID on the Google Calendar
+    returned = models.BooleanField(blank=False, default=False)
 
     def __unicode__(self):
         return u"Reservation by %s from %s to %s" % (self.reserved_by, self.start_date, self.end_date)
