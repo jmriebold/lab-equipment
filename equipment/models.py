@@ -169,7 +169,8 @@ class Reservation(models.Model):
     course = models.CharField(max_length=20, blank=True)  # optional, if it's being used for a course, which course
     start_date = models.DateTimeField()  # when the equipment is checked out
     end_date = models.DateTimeField()  # when the equipment will be returned
-    calendar_event = models.CharField(max_length=500, default='', editable=False)  # The event ID on the Google Calendar
+    calendar_id = models.CharField(max_length=1000, default='', editable=False)  # The Google Calendar ID
+    calendar_event = models.CharField(max_length=1000, default='', editable=False)  # The event ID on the Google Calendar
     returned = models.BooleanField(blank=False, default=False)
 
     def __unicode__(self):
@@ -189,18 +190,21 @@ def tasks(sender, instance, action, **kwargs):
             email == str(instance.reserved_by) + '@uw.edu'
 
         events = ''
+        cal_ids = ''
         equipment_list = []
         equip_lab = instance.equipment.all()[0].lab.replace('P', 'phonlab').replace('S', 'sociolab')
 
         # Add calendar events for each equipment, store names
         for i, equip in enumerate(instance.equipment.all()):
-            event = add_to_calendar(name, email, equip, instance.start_date, instance.end_date, instance.purpose)
+            cal_id, event = add_to_calendar(name, email, equip, instance.start_date, instance.end_date, instance.purpose)
             events += str(event['id']) + '-'
+            cal_ids += cal_id + '-'
 
             equipment_list.append('%s (%s %s)' % (equip.name, equip.manufacturer, equip.model))
 
         # Save calendar event IDs to model
         instance.calendar_event = events
+        instance.calendar_id = cal_ids
         instance.save()
 
         send_confirmation(name, email, equipment_list, equip_lab, instance.start_date, instance.end_date)

@@ -101,7 +101,7 @@ def add_to_calendar(name, email, equipment, start_date, end_date, purpose):
     # Save to calendar
     event = service.events().insert(calendarId=cal_id, body=event).execute()
 
-    return event
+    return cal_id, event
 
 
 # Get the ID of the calendar for a piece of equipment
