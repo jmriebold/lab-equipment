@@ -23,14 +23,21 @@
     <p><b>Current Reservations</b></p>
     {% if current_reservations %}
         {% for reservation in current_reservations %}
-            You have a reservation
-            from {{ reservation.start_date }} to {{ reservation.end_date }} for the following equipment:
-            <ul>
-                {% for equipment_piece in reservation.equipment.all %}
-                    <li> <a href="{% url 'equip_detail' equipment_piece.slug %}">{{ equipment_piece.name }}</a>
-                {% endfor %}
-            </ul>
-            <p>
+                You have a reservation
+                from {{ reservation.start_date }} to {{ reservation.end_date }} for the following equipment:
+                <ul>
+                    {% for equipment_piece in reservation.equipment.all %}
+                        <li> <a href="{% url 'equip_detail' equipment_piece.slug %}">{{ equipment_piece.name }}</a>
+                    {% endfor %}
+                </ul>
+                <p>
+            <form action="{% url 'cancel_confirmation' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="reservation_id" value="{{ reservation.id }}">
+                <input type="hidden" name="reservation_start_date" value="{{ reservation.start_date }}">
+                <input type="hidden" name="reservation_end_date" value="{{ reservation.end_date }}">
+                <input type="submit" value="Cancel Reservation">
+            </form>
         {% endfor %}
     {% else %}
         <p>No current reservations.</p>

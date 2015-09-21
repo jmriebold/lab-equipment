@@ -189,5 +189,34 @@ def make_reservation(request):
     return HttpResponseRedirect(reverse('done'))
 
 
+def cancel_confirmation(request):
+    reservation_id = request.POST['reservation_id']
+    reservation_start_date = request.POST['reservation_start_date']
+    reservation_end_date = request.POST['reservation_end_date']
+
+    context = {'reservation_id': reservation_id, 'reservation_start_date': reservation_start_date,
+               'reservation_end_date': reservation_end_date}
+
+    return render(request, 'equipment/reserve/cancel_confirmation.html', context)
+
+
+def cancel_reservation(request):
+    reservation_id = request.POST['reservation_id']
+
+    remote_user = request.environ.get('REMOTE_USER')
+    user = User.objects.get(username__exact=remote_user)
+
+    reservation = Reservation.objects.get(id=reservation_id)
+
+    # Ensure owner of reservation is the one making the request
+    if reservation.reserved_by == user:
+        reservation.delete()
+    else:
+        return render(request, 'equipment/index.html', {
+                'error_message': "Invalid user! You can only cancel your own reservations."})
+
+    return your_reservations(request)
+
+
 def done(request):
     return render(request, 'equipment/reserve/done.html')

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Reserve Lab Equipment{% endblock %}
+
+{% block primary %}
+    <form action="{% url 'cancel_reservation' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="reservation_id" value="{{ reservation_id }}">
+
+        <p>Are you sure you want to cancel your reservation from {{ reservation_start_date }}
+            to {{ reservation_end_date }}?</p>
+        <input type="submit" value="Cancel Reservation">
+    </form>
+{% endblock %}
+
+{% block returnlink %}
+    <hr>
+    <a href="{% url 'index' %}">back to Equipment Reservations main page</a>
+{% endblock %}
