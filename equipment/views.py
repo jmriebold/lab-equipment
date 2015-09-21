@@ -6,7 +6,6 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 
 from equipment.models import Equipment, Reservation
-from equipment.utils import add_to_calendar, send_confirmation
 
 
 def index(request):
