@@ -43,67 +43,6 @@ def create_thumbnail(image):
     return thumbnail
 
 
-def get_equip_details(equipment):
-    equipment = str(equipment)
-    # Strip formatting
-    equipment = re.sub('.*: |[<>[]]', '', equipment)
-    # Split into fields
-    equipment = equipment.split(',')
-    # Store values
-    equip_cat = equipment[0]
-    equip_name = equipment[1]
-    equip_model = ' '.join(equipment[2:4])
-    equip_lab = get_lab(equipment[4])
-
-    return equip_cat, equip_name, equip_model, equip_lab
-
-
-# Add reservation to Google Calendar
-def add_to_calendar(name, email, equipment, start_date, end_date, purpose):
-    start_date = str(start_date).replace(' ', 'T')
-    end_date = str(end_date).replace(' ', 'T')
-    equip_lab = equipment.lab.replace('P', 'phonlab').replace('S', 'sociolab')
-
-    service_account_email = '275676223429-p0g1vpujgfric1gjoo020e898lhui6pa@developer.gserviceaccount.com'
-
-    with open('/home/calendar/privatekey.pem') as f:
-        private_key = f.read()
-
-    # Get Google credentials
-    credentials = SignedJwtAssertionCredentials(
-        service_account_email,
-        private_key,
-        scope='https://www.googleapis.com/auth/calendar'
-    )
-
-    # Create service
-    http = httplib2.Http()
-    http = credentials.authorize(http)
-    service = discovery.build('calendar', 'v3', http=http)
-
-    # Define event
-    event = {
-        'summary': name + ': ' + equipment.model + ' (' + equip_lab + ')',
-        'description': purpose + '\n\nContact: ' + name + ' (' + email + ')',
-        'start': {
-            'dateTime': start_date,
-            'timeZone': 'America/Los_Angeles',
-        },
-        'end': {
-            'dateTime': end_date,
-            'timeZone': 'America/Los_Angeles',
-        },
-    }
-
-    # Find calendar
-    cal_id = get_calendar(equip_lab, equipment.category, equipment.name)
-
-    # Save to calendar
-    event = service.events().insert(calendarId=cal_id, body=event).execute()
-
-    return cal_id, event
-
-
 # Get the ID of the calendar for a piece of equipment
 def get_calendar(lab, category, name):
     # Dict storing calendar IDs for lab equipment
@@ -150,6 +89,52 @@ def get_calendar(lab, category, name):
         calendar = calendars[lab]['default']
 
     return calendar
+
+
+# Add reservation to Google Calendar
+def add_to_calendar(name, email, equipment, start_date, end_date, purpose):
+    start_date = str(start_date).replace(' ', 'T')
+    end_date = str(end_date).replace(' ', 'T')
+    equip_lab = equipment.lab.replace('P', 'phonlab').replace('S', 'sociolab')
+
+    service_account_email = '275676223429-p0g1vpujgfric1gjoo020e898lhui6pa@developer.gserviceaccount.com'
+
+    with open('/home/calendar/privatekey.pem') as f:
+        private_key = f.read()
+
+    # Get Google credentials
+    credentials = SignedJwtAssertionCredentials(
+        service_account_email,
+        private_key,
+        scope='https://www.googleapis.com/auth/calendar'
+    )
+
+    # Create service
+    http = httplib2.Http()
+    http = credentials.authorize(http)
+    service = discovery.build('calendar', 'v3', http=http)
+
+    # Define event
+    event = {
+        'summary': name + ': ' + equipment.model + ' (' + equip_lab + ')',
+        'description': purpose + '\n\nContact: ' + name + ' (' + email + ')',
+        'start': {
+            'dateTime': start_date,
+            'timeZone': 'America/Los_Angeles',
+        },
+        'end': {
+            'dateTime': end_date,
+            'timeZone': 'America/Los_Angeles',
+        },
+    }
+
+    # Find calendar
+    cal_id = get_calendar(equip_lab, equipment.category, equipment.name)
+
+    # Save to calendar
+    event = service.events().insert(calendarId=cal_id, body=event).execute()
+
+    return cal_id, event
 
 
 def send_email(recipient, message):
