@@ -1,10 +1,10 @@
 <b>Claire Jaja, with modifications by John Riebold</b><br />
 an equipment reservation system for the University of Washington Phonetics and Sociolinguistics labs
 
-* Created using Django v. 1.6.4 (for more information on Django, see [documentation](https://docs.djangoproject.com/en/1.6/))
+* Created using Django v. 1.6.11 (for more information on Django, see [documentation](https://docs.djangoproject.com/en/1.6/))
 * Using additional app South for database migration (for more information on South, see [documentation](http://south.readthedocs.org/en/latest/index.html))
 * Using MySQL database as backend (named lab_equipment, can be accessed by user: calendar)
-* Using virtualenv for local packages (to activate virtual environment within calendar user home folder (required for successfully running application with all dependencies), use command: <code>source ./.virtualenv/lab-equipment/bin/activate</code>)
+* Using virtualenv for local packages (the virtual environment is automatically activated upon login using the command: <code>source ./.virtualenv/lab-equipment/bin/activate</code> Deactivate it by executing <code>deactivate</code>)
 * Currently set up to appear at [https://zeos.ling.washington.edu/equipment-reservations](https://zeos.ling.washington.edu/equipment-reservations)
 
 # Usage
