@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db.models.signals import m2m_changed
 from django.dispatch import receiver
-from utils import autoresize_image, add_to_calendar, send_confirmation
+from utils import autoresize_image, add_to_calendar, remove_from_calendar, send_confirmation
 
 
 # Extend Django's User model with lab-specific fields
@@ -72,7 +72,7 @@ class Equipment(models.Model):
     model = models.CharField(max_length=200)  # what the equipment is exactly i.e. H4 Zoom
     location = models.CharField(max_length=10, choices=LOCATION_CHOICES)
     status = models.CharField(max_length=2, choices=STATUS, blank=False, default='ok')
-    reservable = models.BooleanField()  # whether or not people can reserve/check out this equipment
+    reservable = models.BooleanField(default=True)  # whether or not people can reserve/check out this equipment
     max_reservation_length = models.IntegerField(blank=True, null=True)  # maximum allowed reservation in hours
     privilege_level = models.IntegerField(choices=PRIVILEGE_LEVELS, blank=True)
     image = models.ImageField(upload_to='equipment_images/', default='equipment_images/null.jpg')
@@ -134,7 +134,7 @@ class Book(models.Model):
     lab = models.CharField(max_length=1, choices=LAB_CHOICES)
     location = models.CharField(max_length=10, choices=LOCATION_CHOICES)
     status = models.CharField(max_length=2, choices=STATUS, blank=False, default='ok')
-    reservable = models.BooleanField()  # whether or not people can reserve/check out this book
+    reservable = models.BooleanField(default=True)  # whether or not people can reserve/check out this book
     max_reservation_length = models.IntegerField(blank=True, null=True)  # maximum allowed reservation in hours
     privilege_level = models.IntegerField(choices=PRIVILEGE_LEVELS, blank=True)
     image = models.ImageField(upload_to='equipment_images/', default='equipment_images/null.jpg')
@@ -172,6 +172,14 @@ class Reservation(models.Model):
     calendar_id = models.CharField(max_length=1000, default='', editable=False)  # The Google Calendar ID
     calendar_event = models.CharField(max_length=1000, default='', editable=False)  # The event ID on the Google Calendar
     returned = models.BooleanField(blank=False, default=False)
+
+    def delete(self, using=None):
+        for i, event in enumerate(self.calendar_event.split('-')):
+            event_id = event
+            cal_id = self.calendar_id.split('-')[i]
+            remove_from_calendar(cal_id, event_id)
+
+        super(Reservation, self).delete()
 
     def __unicode__(self):
         return u"Reservation by %s from %s to %s" % (self.reserved_by, self.start_date, self.end_date)

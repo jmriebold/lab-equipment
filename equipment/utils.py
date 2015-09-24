@@ -144,6 +144,13 @@ def add_to_calendar(name, email, equipment, start_date, end_date, purpose):
     return cal_id, event
 
 
+def remove_from_calendar(cal_id, event_id):
+    service = create_service()
+
+    # Remove from calendar
+    service.events().delete(calendarId=cal_id, eventID=event_id).execute()
+
+
 def send_email(recipient, message):
     username = 'lbchkout@uw.edu'
     with open('/home/calendar/email_account.txt', 'r') as f:
