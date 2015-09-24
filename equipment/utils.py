@@ -3,7 +3,6 @@
 # This module provides various functions for the equipment app, including automatically resizing images,
 # to the maximum allowed width, adding reservations to the Google Calendars, and sending reminder emails.
 
-import re
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -147,8 +146,7 @@ def add_to_calendar(name, email, equipment, start_date, end_date, purpose):
 def remove_from_calendar(cal_id, event_id):
     service = create_service()
 
-    # Remove from calendar
-    service.events().delete(calendarId=cal_id, eventID=event_id).execute()
+    service.events().delete(calendarId=cal_id, eventId=event_id).execute()
 
 
 def send_email(recipient, message):

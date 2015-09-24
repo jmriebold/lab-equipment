@@ -5,6 +5,11 @@ from django.contrib.auth.models import User
 from equipment.models import Status, Equipment, Book, Reservation
 
 
+def delete_selected(self, request, obj):
+    for o in obj.all():
+        o.delete()
+
+
 # Define an inline admin descriptor for Person model
 class StatusInline(admin.StackedInline):
     model = Status
@@ -25,8 +30,12 @@ class BookAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('author', 'title',)}
 
 
+class ReservationAdmin(admin.ModelAdmin):
+    actions = [delete_selected]
+
+
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
 admin.site.register(Equipment, EquipmentAdmin)
 admin.site.register(Book, BookAdmin)
-admin.site.register(Reservation)
+admin.site.register(Reservation, ReservationAdmin)

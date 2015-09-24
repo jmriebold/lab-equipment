@@ -211,8 +211,8 @@ def tasks(sender, instance, action, **kwargs):
             equipment_list.append('%s (%s %s)' % (equip.name, equip.manufacturer, equip.model))
 
         # Save calendar event IDs to model
-        instance.calendar_event = events
-        instance.calendar_id = cal_ids
+        instance.calendar_event = events.strip('-')
+        instance.calendar_id = cal_ids.strip('-')
         instance.save()
 
         send_confirmation(name, email, equipment_list, equip_lab, instance.start_date, instance.end_date)
