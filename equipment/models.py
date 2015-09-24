@@ -72,7 +72,7 @@ class Equipment(models.Model):
     model = models.CharField(max_length=200)  # what the equipment is exactly i.e. H4 Zoom
     location = models.CharField(max_length=10, choices=LOCATION_CHOICES)
     status = models.CharField(max_length=2, choices=STATUS, blank=False, default='ok')
-    reservable = models.BooleanField(default=True)  # whether or not people can reserve/check out this equipment
+    reservable = models.BooleanField(default=True, blank=False)  # whether or not people can reserve/check out this equipment
     max_reservation_length = models.IntegerField(blank=True, null=True)  # maximum allowed reservation in hours
     privilege_level = models.IntegerField(choices=PRIVILEGE_LEVELS, blank=True)
     image = models.ImageField(upload_to='equipment_images/', default='equipment_images/null.jpg')
@@ -134,7 +134,7 @@ class Book(models.Model):
     lab = models.CharField(max_length=1, choices=LAB_CHOICES)
     location = models.CharField(max_length=10, choices=LOCATION_CHOICES)
     status = models.CharField(max_length=2, choices=STATUS, blank=False, default='ok')
-    reservable = models.BooleanField(default=True)  # whether or not people can reserve/check out this book
+    reservable = models.BooleanField(default=True, blank=False)  # whether or not people can reserve/check out this book
     max_reservation_length = models.IntegerField(blank=True, null=True)  # maximum allowed reservation in hours
     privilege_level = models.IntegerField(choices=PRIVILEGE_LEVELS, blank=True)
     image = models.ImageField(upload_to='equipment_images/', default='equipment_images/null.jpg')
@@ -171,7 +171,7 @@ class Reservation(models.Model):
     end_date = models.DateTimeField()  # when the equipment will be returned
     calendar_id = models.CharField(max_length=1000, default='', editable=False)  # The Google Calendar ID
     calendar_event = models.CharField(max_length=1000, default='', editable=False)  # The event ID on the Google Calendar
-    returned = models.BooleanField(blank=False, default=False)
+    returned = models.BooleanField(blank=False, default=False, editable=False)
 
     def delete(self, using=None):
         for i, event in enumerate(self.calendar_event.split('-')):
