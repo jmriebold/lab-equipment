@@ -185,7 +185,7 @@ class Reservation(models.Model):
         return u"Reservation by %s from %s to %s" % (self.reserved_by, self.start_date, self.end_date)
 
 
-# Add/remove calendar event(s) and send confirmation email when equipment is added/removed
+# Add calendar event(s) and send confirmation email when equipment is added
 @receiver(m2m_changed, sender=Reservation.equipment.through)
 def tasks(sender, instance, action, **kwargs):
     if action == 'post_add':
