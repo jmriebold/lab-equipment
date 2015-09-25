@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db.models.signals import m2m_changed
 from django.dispatch import receiver
+from django.template.defaultfilters import slugify
 from utils import autoresize_image, add_to_calendar, remove_from_calendar, send_confirmation
 
 
@@ -64,7 +65,7 @@ class Equipment(models.Model):
     PRIVILEGE_LEVELS = ((1, 'director'), (2, 'lab member'), (3, 'student'))
 
     name = models.CharField(max_length=200)  # unique name for each piece of equipment
-    slug = models.SlugField()
+    slug = models.SlugField(editable=False)
     lab = models.CharField(max_length=1, choices=LAB_CHOICES)
     lab_or_field = models.CharField(max_length=5, choices=LAB_OR_FIELD)
     category = models.CharField(max_length=5, choices=CATEGORY_CHOICES)
@@ -72,16 +73,18 @@ class Equipment(models.Model):
     model = models.CharField(max_length=200)  # what the equipment is exactly i.e. H4 Zoom
     location = models.CharField(max_length=10, choices=LOCATION_CHOICES)
     status = models.CharField(max_length=2, choices=STATUS, blank=False, default='ok')
-    reservable = models.BooleanField(default=True, blank=False)  # whether or not people can reserve/check out this equipment
+    reservable = models.BooleanField(default=True,
+                                     blank=False)  # whether or not people can reserve/check out this equipment
     max_reservation_length = models.IntegerField(blank=True, null=True)  # maximum allowed reservation in hours
     privilege_level = models.IntegerField(choices=PRIVILEGE_LEVELS, blank=True)
+    recent_checkouts = models.TextField(default='', blank=True, editable=False)  # Recent reservations of this equip
     image = models.ImageField(upload_to='equipment_images/', default='equipment_images/null.jpg')
     manual = models.URLField(blank=True)
     guide = models.URLField(blank=True)
 
     def __unicode__(self):
         return u"%s: %s %s (%s)" % (
-        self.name, self.manufacturer, self.model, self.lab.replace('P', 'phonlab').replace('S', 'sociolab'))
+            self.name, self.manufacturer, self.model, self.lab.replace('P', 'phonlab').replace('S', 'sociolab'))
 
     def clean(self):
         # max reservation length and privilege level required if reservable
@@ -91,6 +94,8 @@ class Equipment(models.Model):
                     "All reservable equipment must have a maximum reservation length and a privilege level.")
 
     def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+
         # Mark as not reservable if lost or broken
         if self.status != 'ok':
             self.reservable = False
@@ -130,13 +135,14 @@ class Book(models.Model):
 
     author = models.CharField(max_length=100)
     title = models.CharField(max_length=100)
-    slug = models.SlugField()
+    slug = models.SlugField(editable=False)
     lab = models.CharField(max_length=1, choices=LAB_CHOICES)
     location = models.CharField(max_length=10, choices=LOCATION_CHOICES)
     status = models.CharField(max_length=2, choices=STATUS, blank=False, default='ok')
     reservable = models.BooleanField(default=True, blank=False)  # whether or not people can reserve/check out this book
     max_reservation_length = models.IntegerField(blank=True, null=True)  # maximum allowed reservation in hours
     privilege_level = models.IntegerField(choices=PRIVILEGE_LEVELS, blank=True)
+    recent_checkouts = models.TextField(default='', blank=True, editable=False)  # Recent reservations of this equip
     image = models.ImageField(upload_to='equipment_images/', default='equipment_images/null.jpg')
 
     def __unicode__(self):
@@ -152,6 +158,8 @@ class Book(models.Model):
                 raise ValidationError("privilege level is " + self.privilege_level)
 
     def save(self, *args, **kwargs):
+        self.slug = slugify(self.author, self.title)
+
         # Mark as not reservable if lost or damaged
         if self.status != 'ok':
             self.reservable = False
@@ -170,9 +178,27 @@ class Reservation(models.Model):
     start_date = models.DateTimeField()  # when the equipment is checked out
     end_date = models.DateTimeField()  # when the equipment will be returned
     calendar_id = models.CharField(max_length=1000, default='', editable=False)  # The Google Calendar ID
-    calendar_event = models.CharField(max_length=1000, default='', editable=False)  # The event ID on the Google Calendar
-    returned = models.BooleanField(blank=False, default=False, editable=False)
+    calendar_event = models.CharField(max_length=1000, default='',
+                                      editable=False)  # The event ID on the Google Calendar
+    returned = models.BooleanField(blank=False, default=False,
+                                   editable=False)  # Whether a reservation has been returned
+    checkout_reminder_sent = models.BooleanField(default=False, blank=False,
+                                                 editable=False)  # Whether a reminder for an upcoming reservation has been sent
+    return_reminder_sent = models.BooleanField(default=False, blank=False,
+                                               editable=False)  # Whether a reminder for an upcoming return has been sent
+    late_reminder_sent = models.BooleanField(default=False, blank=False,
+                                             editable=False)  # Whether a reminder to return reservation has been sent
 
+    # Add reservation to equip's recent checkouts on return
+    def save(self):
+        if self.returned:
+            for equip in self.equipment.all():
+                equip.recent_checkouts = equip.recent_checkouts + ', ' + self
+                equip.save()
+
+        super(Reservation, self).save()
+
+    # Remove from GCal on delete
     def delete(self, using=None):
         for i, event in enumerate(self.calendar_event.split('-')):
             event_id = event
@@ -192,27 +218,24 @@ def tasks(sender, instance, action, **kwargs):
         # Get name and email
         name = instance.reserved_by.get_full_name()
         if name == '':
-            name = str(self.reserved_by)
+            name = str(instance.reserved_by)
         email = instance.reserved_by.email
         if email == '':
             email == str(instance.reserved_by) + '@uw.edu'
 
         events = ''
         cal_ids = ''
-        equipment_list = []
-        equip_lab = instance.equipment.all()[0].lab.replace('P', 'phonlab').replace('S', 'sociolab')
 
         # Add calendar events for each equipment, store names
         for i, equip in enumerate(instance.equipment.all()):
-            cal_id, event = add_to_calendar(name, email, equip, instance.start_date, instance.end_date, instance.purpose)
+            cal_id, event = add_to_calendar(name, email, equip, instance.start_date, instance.end_date,
+                                            instance.purpose)
             events += str(event['id']) + '-'
             cal_ids += cal_id + '-'
-
-            equipment_list.append('%s (%s %s)' % (equip.name, equip.manufacturer, equip.model))
 
         # Save calendar event IDs to model
         instance.calendar_event = events.strip('-')
         instance.calendar_id = cal_ids.strip('-')
         instance.save()
 
-        send_confirmation(name, email, equipment_list, equip_lab, instance.start_date, instance.end_date)
+        send_confirmation(instance)
