@@ -149,7 +149,33 @@ def remove_from_calendar(cal_id, event_id):
     service.events().delete(calendarId=cal_id, eventId=event_id).execute()
 
 
-def send_email(recipient, message):
+# Get details of reservation for email methods
+def get_details(reservation):
+    name = reservation.reserved_by.get_full_name()
+    if name == '':
+        name = str(reservation.reserved_by)
+    email = reservation.reserved_by.email
+    if email == '':
+        email == str(reservation.reserved_by) + '@uw.edu'
+    equipment_list = ['%s (%s %s)' % (equip.name, equip.manufacturer, equip.model) for equip in reservation.equipment.all()]
+    if len(equipment_list) > 1:
+        equipment_list = ', '.join(equipment_list)
+    else:
+        equipment_list = equipment_list[0]
+    equip_lab = reservation.equipment.all()[0].lab.replace('P', 'phonlab').replace('S', 'sociolab')
+
+    return name, email, equipment_list, equip_lab, reservation.start_date, reservation.end_date
+
+
+def send_email(recipient, subject, body):
+    # Create message container
+    message = MIMEMultipart('alternative')
+    message['Subject'] = subject
+    message['From'] = 'UW Linguistics Equipment Checkout'
+    message['To'] = recipient
+    body = MIMEText(body, 'html')
+    message.attach(body)
+
     username = 'lbchkout@uw.edu'
     with open('/home/calendar/email_account.txt', 'r') as f:
         password = f.readline()
@@ -159,38 +185,95 @@ def send_email(recipient, message):
     server.ehlo()
     server.starttls()
     server.login(username, password)
-    server.sendmail(username, recipient, message)
+    server.sendmail(username, recipient, message.as_string())
     server.close()
 
 
 # Send a confirmation email on successful reservation
-def send_confirmation(recipient, email, equipment, equip_lab, start_date, end_date):
-    if len(equipment) > 1:
-        equipment = ', '.join(equipment)
-    else:
-        equipment = equipment[0]
+def send_confirmation(reservation):
+    recipient, email, equipment, equip_lab, start_date, end_date = get_details(reservation)
 
-    # Create message container
-    message = MIMEMultipart('alternative')
-    message['Subject'] = "Reservation Confirmation"
-    message['From'] = 'UW Linguistics Equipment Checkout'
+    subject = 'Reservation Confirmation'
 
     # Create HTML message body
-    html = """\
+    body = """\
     <html>
       <head></head>
       <body>
         <p>Dear %s,<br>
            You have reserved %s from the %s from %s to %s.<br><br>
            For links to equipment manuals and guides, see the <a href="https://zeos.ling.washington.edu/equipment-reservations/equipment/all-equipment">equipment details page</a>.<br><br>
-           This is an automated email. If you have any questions or issues, please contact the lab SA or the requisite lab director.
+           This is an automated email. If you have any questions or concerns, please contact the lab SA or the requisite lab director.
         </p>
       </body>
     </html>
     """ % (recipient, equipment, equip_lab, start_date, end_date)
 
-    html = MIMEText(html, 'html')
+    send_email(email, subject, body)
 
-    message.attach(html)
 
-    send_email(email, message.as_string())
+# Send a reminder email for upcoming reservations
+def send_checkout_reminder(reservation):
+    recipient, email, equipment, equip_lab, start_date, end_date = get_details(reservation)
+
+    subject = 'Upcoming Reservation'
+
+    # Create HTML message body
+    body = """\
+    <html>
+      <head></head>
+      <body>
+        <p>Dear %s,<br>
+           This is a reminder that you have a reservation starting tomorrow. You have reserved %s from the %s from %s to %s.<br><br>
+           For links to equipment manuals and guides, see the <a href="https://zeos.ling.washington.edu/equipment-reservations/equipment/all-equipment">equipment details page</a>.<br><br>
+           This is an automated email. If you have any questions or concerns, please contact the lab SA or the requisite lab director.
+        </p>
+      </body>
+    </html>
+    """ % (recipient, equipment, equip_lab, start_date, end_date)
+
+    send_email(email, subject, body)
+
+
+# Send a reminder email for upcoming returns
+def send_return_reminder(reservation):
+    recipient, email, equipment, equip_lab, start_date, end_date = get_details(reservation)
+
+    subject = 'Equipment Due Tomorrow'
+
+    # Create HTML message body
+    body = """\
+    <html>
+      <head></head>
+      <body>
+        <p>Dear %s,<br>
+           This is a reminder that your reservation of %s from the %s is due tomorrow. Please ensure that after returning the equipment you mark the it as returned and indicate its condition on the <a href="https://zeos.ling.washington.edu/equipment-reservations/equipment/your-reservations">your reservations page</a>.<br><br>
+           This is an automated email. If you have any questions or concerns, please contact the lab SA or the requisite lab director.
+        </p>
+      </body>
+    </html>
+    """ % (recipient, equipment, equip_lab)
+
+    send_email(email, subject, body)
+
+
+# Send a reminder email for upcoming returns
+def send_late_reminder(reservation):
+    recipient, email, equipment, equip_lab, start_date, end_date = get_details(reservation)
+
+    subject = 'Equipment Late'
+
+    # Create HTML message body
+    body = """\
+    <html>
+      <head></head>
+      <body>
+        <p>Dear %s,<br>
+           This is a reminder that your reservation of %s from the %s was due yesterday. Please return it immediately, as other lab members may be waiting to check it out. After returning the equipment, please mark it as returned and indicate its condition on the <a href="https://zeos.ling.washington.edu/equipment-reservations/equipment/your-reservations">your reservations page</a>.<br><br>
+           This is an automated email. If you have any questions or concerns, please contact the lab SA or the requisite lab director.
+        </p>
+      </body>
+    </html>
+    """ % (recipient, equipment, equip_lab)
+
+    send_email(email, subject, body)
