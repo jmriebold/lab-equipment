@@ -23,11 +23,11 @@ class UserAdmin(UserAdmin):
 
 
 class EquipmentAdmin(admin.ModelAdmin):
-    prepopulated_fields = {'slug': ('name',)}
+    readonly_fields = ('recent_checkouts',)
 
 
 class BookAdmin(admin.ModelAdmin):
-    prepopulated_fields = {'slug': ('author', 'title',)}
+    readonly_fields = ('recent_checkouts',)
 
 
 class ReservationAdmin(admin.ModelAdmin):
