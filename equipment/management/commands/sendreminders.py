@@ -13,7 +13,11 @@ class Command(BaseCommand):
         localtz = get_localzone()
         now = localtz.localize(datetime.datetime.now())
 
-        reservations = Reservation.objects.all()
+        # Constrain search range
+        range_start = localtz.localize(datetime.datetime.now()) - datetime.timedelta(hours=48)
+        range_end = localtz.localize(datetime.datetime.now()) + datetime.timedelta(hours=48)
+
+        reservations = Reservation.objects.filter(start_date__gte=range_start, end_date__lte=range_end)
 
         for reservation in reservations:
             # Check for reservations beginning in less than 24 hours
