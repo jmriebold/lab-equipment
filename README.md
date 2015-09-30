@@ -1,4 +1,4 @@
-<b>Claire Jaja, with modifications by John Riebold</b><br />
+<b>Claire Jaja & John Riebold</b><br />
 an equipment reservation system for the University of Washington Phonetics and Sociolinguistics labs
 
 * Created using Django v. 1.6.11 (for more information on Django, see [documentation](https://docs.djangoproject.com/en/1.6/))
