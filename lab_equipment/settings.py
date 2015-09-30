@@ -37,6 +37,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'south',
     'equipment',
 )
 
@@ -61,15 +62,17 @@ ROOT_URLCONF = 'lab_equipment.urls'
 WSGI_APPLICATION = 'lab_equipment.wsgi.application'
 
 
+with open('/home/calendar/sql_account.txt', 'r') as f:
+        password = f.readline()
+
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'lab_equipment',
         'USER': 'calendar',
-        'PASSWORD': 'mighty0',
+        'PASSWORD': password,
         'HOST': '',
         'PORT': '',
     }
