@@ -47,13 +47,14 @@ class Equipment(models.Model):
             ('cab1_draw2', 'cabinet 1 drawer 2'),
             ('cab1_draw3', 'cabinet 1 drawer 3'),
             ('cab1_draw4', 'cabinet 1 drawer 4'),
-            ('bookshelf1', 'bookshelf 1'),
             ('cab2', 'cabinet 2'),
+            ('desk', 'desk'),
         )
          ),
         ('Sociolab', (
             ('cab1_draw1', 'cabinet 1 drawer 1'),
             ('cab1_draw2', 'cabinet 1 drawer 2'),
+            ('desk', 'desk'),
         )
          ),
         ('unknown', 'unknown')
