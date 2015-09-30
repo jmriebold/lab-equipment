@@ -34,7 +34,13 @@ def autoresize_image(image_path):
 def create_thumbnail(image):
     width = image.size[0]
     height = image.size[1]
-    reduce_factor = settings.THUMBNAIL_WIDTH / float(width)
+
+    # Shrink by largest dimension
+    if width > height:
+        reduce_factor = settings.THUMBNAIL_SIZE / float(width)
+    else:
+        reduce_factor = settings.THUMBNAIL_SIZE / float(height)
+
     reduced_width = int(width * reduce_factor)
     reduced_height = int(height * reduce_factor)
     thumbnail = image.resize((reduced_width, reduced_height), Image.ANTIALIAS)
