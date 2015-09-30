@@ -12,7 +12,7 @@
                         <td colspan="3" align=center><b>{{ each_equip.name }}</b></td>
                     </tr>
                     <tr>
-                        <td rowspan="10"><img src="{{ each_equip.image.url }}"></td>
+                        <td rowspan="20"><img src="{{ each_equip.image.url }}"></td>
                     </tr>
                     <tr>
                         <td><b>Lab</b></td>
@@ -41,7 +41,13 @@
                     {% if each_equip.manual %}
                         <tr>
                             <td><b>Manual</b></td>
-                            <td><a href="{{ each_equip.manual.url }}">Here</a></td>
+                            <td><a href="{{ each_equip.manual }}">Link</a></td>
+                        </tr>
+                    {% endif %}
+                    {% if each_equip.guide %}
+                        <tr>
+                            <td><b>Guide</b></td>
+                            <td><a href="{{ each_equip.guide }}">Link</a></td>
                         </tr>
                     {% endif %}
                     <tr>
