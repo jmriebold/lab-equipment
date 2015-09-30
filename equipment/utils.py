@@ -83,6 +83,9 @@ def get_calendar(lab, category, name):
                 'Caan': 'qa61uu0o9jlne7kphc7aofj6i0@group.calendar.google.com',
                 'Chesterton': '7hnn52hibggqriv6i36uslcavo@group.calendar.google.com'
             },
+            'booth': {
+                'Whole lab': '6o63676u7ji2su97469o83s6so@group.calendar.google.com'
+            },
             'default': '3qp44cj94aba19alvj997ivrb0@group.calendar.google.com'
         }
     }
