@@ -89,7 +89,7 @@ class Equipment(models.Model):
     def clean(self):
         # max reservation length and privilege level required if reservable
         if self.reservable:
-            if self.max_reservation_length is None or self.privilege_level == '':
+            if self.max_reservation_length is None or self.privilege_level is None:
                 raise ValidationError(
                     "All reservable equipment must have a maximum reservation length and a privilege level.")
 
@@ -130,7 +130,6 @@ class Book(models.Model):
     )
 
     PRIVILEGE_LEVELS = ((1, 'director'), (2, 'lab member'), (3, 'student'))
-
     STATUS = (('ok', 'OK'), ('ls', 'lost'), ('br', 'broken'))
 
     author = models.CharField(max_length=100)
@@ -154,11 +153,9 @@ class Book(models.Model):
             if self.max_reservation_length is None or self.privilege_level is None:
                 raise ValidationError(
                     "All reservable equipment must have a maximum reservation length and a privilege level.")
-            else:
-                raise ValidationError("privilege level is " + self.privilege_level)
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.author, self.title)
+        self.slug = slugify(self.author + ' ' + self.title)
 
         # Mark as not reservable if lost or damaged
         if self.status != 'ok':
