@@ -3,6 +3,14 @@
 {% block title %}Equipment{% endblock %}
 
 {% block primary %}
+    <script type="text/javascript" src="/static/template/jquery.tablesorter.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // Sort on lab and equip name
+            $.tablesorter.defaults.sortList = [[4,0],[1,0]];
+            $("table").tablesorter();
+        });
+    </script>
 
     <table id='equip_list' class='tablesorter'>
         <thead>
