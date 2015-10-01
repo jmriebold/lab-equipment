@@ -18,6 +18,18 @@ class Status(models.Model):
     privilege_level = models.IntegerField(choices=PRIVILEGE_LEVELS, default=4)
     lab_membership = models.CharField(max_length=1, choices=LAB_MEMBERSHIP, default='n')
 
+    # Settings for temporary privileges
+    privileges_permanent = models.BooleanField(default=True, blank=False)
+    privilege_expiry = models.DateField(null=True, blank=True)
+
+    def clean(self):
+        # If user is temporary, ensure expiry date exists
+        if not self.privileges_permanent and (self.privilege_expiry is None or self.privilege_expiry == ''):
+            raise ValidationError('Temporary users must have an expiry date.')
+        # Clear expiry date if user has permanent privileges
+        elif self.privileges_permanent and self.privilege_expiry is not None and self.privilege_expiry != '':
+            self.privilege_expiry = None
+
 
 # This class is for all the equipment in the lab.
 class Equipment(models.Model):
