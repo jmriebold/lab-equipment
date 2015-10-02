@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-from django.db.models.signals import m2m_changed
+from django.db.models.signals import m2m_changed, post_save
 from django.dispatch import receiver
 from django.template.defaultfilters import slugify
 from utils import autoresize_image, add_to_calendar, remove_from_calendar, send_confirmation
@@ -34,10 +34,10 @@ class Status(models.Model):
 # This class is for all the equipment in the lab.
 class Equipment(models.Model):
     # all equipment associated with either Phonetics or Sociolinguistics Lab
-    LAB_CHOICES = (('p', 'Phonetics'), ('s', 'Sociolinguistics'),)
+    LAB_CHOICES = (('p', 'Phonetics'), ('s', 'Sociolinguistics'))
 
     # equipment for use in lab or in field or both
-    LAB_OR_FIELD = (('lab', 'lab'), ('field', 'field'), ('both', 'lab or field'),)
+    LAB_OR_FIELD = (('lab', 'lab'), ('field', 'field'), ('both', 'lab or field'))
     
     # equipment categories
     CATEGORY_CHOICES = (
@@ -250,3 +250,9 @@ def tasks(sender, instance, action, **kwargs):
         instance.save()
 
         send_confirmation(instance)
+
+
+# Creates corresponding user status
+@receiver(post_save, sender=User)
+def user_post_save(sender, instance, signal, *args, **kwargs):
+    profile, new = Status.objects.get_or_create(user=instance)
