@@ -107,7 +107,7 @@ class Equipment(models.Model):
                     "All reservable equipment must have a maximum reservation length and a privilege level.")
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.name)
+        self.slug = slugify(self.name + ' (' + self.lab.replace('P', 'phonlab').replace('S', 'sociolab') + ')')
 
         # Mark as not reservable if lost or broken
         if self.status != 'ok':
@@ -190,8 +190,7 @@ class Reservation(models.Model):
     calendar_id = models.CharField(max_length=1000, default='', editable=False)  # The Google Calendar ID
     calendar_event = models.CharField(max_length=1000, default='',
                                       editable=False)  # The event ID on the Google Calendar
-    returned = models.BooleanField(blank=False, default=False,
-                                   editable=False)  # Whether a reservation has been returned
+    returned = models.BooleanField(blank=False, default=False)  # Whether a reservation has been returned
     checkout_reminder_sent = models.BooleanField(default=False, blank=False,
                                                  editable=False)  # Whether a reminder for an upcoming reservation has been sent
     return_reminder_sent = models.BooleanField(default=False, blank=False,
@@ -203,7 +202,13 @@ class Reservation(models.Model):
     def save(self):
         if self.returned:
             for equip in self.equipment.all():
-                equip.recent_checkouts = equip.recent_checkouts + ', ' + self
+                equip.recent_checkouts = equip.recent_checkouts + self.__unicode__() + ', '
+
+                # Trim to most recent 10 checkouts
+                checkouts = equip.recent_checkouts.split(', ')
+                if len(checkouts) > 10:
+                    equip.recent_checkouts = ', '.join(checkouts[:-10])
+
                 equip.save()
 
         super(Reservation, self).save()
