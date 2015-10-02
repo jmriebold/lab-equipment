@@ -34,7 +34,7 @@ class Status(models.Model):
 # This class is for all the equipment in the lab.
 class Equipment(models.Model):
     # all equipment associated with either Phonetics or Sociolinguistics Lab
-    LAB_CHOICES = (('P', 'Phonetics'), ('S', 'Sociolinguistics'),)
+    LAB_CHOICES = (('p', 'Phonetics'), ('s', 'Sociolinguistics'),)
 
     # equipment for use in lab or in field or both
     LAB_OR_FIELD = (('lab', 'lab'), ('field', 'field'), ('both', 'lab or field'),)
@@ -97,7 +97,7 @@ class Equipment(models.Model):
 
     def __unicode__(self):
         return u"%s: %s %s (%s)" % (
-            self.name, self.manufacturer, self.model, self.lab.replace('P', 'phonlab').replace('S', 'sociolab'))
+            self.name, self.manufacturer, self.model, self.lab.replace('p', 'phonlab').replace('s', 'sociolab'))
 
     def clean(self):
         # max reservation length and privilege level required if reservable
@@ -107,7 +107,7 @@ class Equipment(models.Model):
                     "All reservable equipment must have a maximum reservation length and a privilege level.")
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.name + ' (' + self.lab.replace('P', 'phonlab').replace('S', 'sociolab') + ')')
+        self.slug = slugify(self.name + ' (' + self.lab.replace('p', 'phonlab').replace('s', 'sociolab') + ')')
 
         # Mark as not reservable if lost or broken
         if self.status != 'ok':
@@ -121,7 +121,7 @@ class Equipment(models.Model):
 
 class Book(models.Model):
     # all books associated with either Phonetics or Sociolinguistics Lab
-    LAB_CHOICES = (('P', 'Phonetics'), ('S', 'Sociolinguistics'),)
+    LAB_CHOICES = (('p', 'Phonetics'), ('s', 'Sociolinguistics'),)
 
     # books also have a physical location
     LOCATION_CHOICES = (

@@ -125,7 +125,7 @@ def create_service():
 def add_to_calendar(name, email, equipment, start_date, end_date, purpose):
     start_date = str(start_date).replace(' ', 'T')
     end_date = str(end_date).replace(' ', 'T')
-    equip_lab = equipment.lab.replace('P', 'phonlab').replace('S', 'sociolab')
+    equip_lab = equipment.lab.replace('p', 'phonlab').replace('s', 'sociolab')
 
     service = create_service()
 
@@ -171,7 +171,7 @@ def get_details(reservation):
         equipment_list = ', '.join(equipment_list)
     else:
         equipment_list = equipment_list[0]
-    equip_lab = reservation.equipment.all()[0].lab.replace('P', 'phonlab').replace('S', 'sociolab')
+    equip_lab = reservation.equipment.all()[0].lab.replace('p', 'phonlab').replace('s', 'sociolab')
 
     return name, email, equipment_list, equip_lab, reservation.start_date, reservation.end_date
 
