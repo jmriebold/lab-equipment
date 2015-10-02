@@ -95,6 +95,18 @@
                 <td>no - maximum reservation length is less than time span selected</td>
             </tr>
         {% endfor %}
+        {% for equip in nopermissions_equipment %}
+            <tr class="unavailable">
+                <td></td>
+                <td><a href="{% url 'equip_detail' equip.slug %}">{{ equip.name }}</a></td>
+                <td>{{ equip.get_category_display }}</td>
+                <td>{{ equip.manufacturer }}</td>
+                <td>{{ equip.model }}</td>
+                <td>{{ equip.get_lab_display }}</td>
+                <td>{{ equip.get_lab_or_field_display }}</td>
+                <td>no - you do not have permission to checkout this equipment</td>
+            </tr>
+        {% endfor %}
         </tbody>
     </table>
     <br>

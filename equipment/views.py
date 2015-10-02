@@ -113,27 +113,33 @@ def reserve_dates(request, start_date, end_date):
                 for equipment in reservation.equipment.all():
                     unavailable_equipment.add(equipment.id)
 
-            # Add equipment not reservable due to permissions
+            # Exclude equipment not reservable due to permissions
             remote_user = request.environ.get('REMOTE_USER')
             user = User.objects.get(username__exact=remote_user)
             status = Status.objects.get(user__exact=user)
 
+            nopermissions_equipment = set()
             for equip in Equipment.objects.all():
                 if status.privilege_level > equip.privilege_level or status.lab_membership not in [equip.lab, 'b']:
-                    unavailable_equipment.add(equip.id)
+                    nopermissions_equipment.add(equip.id)
 
             # exclude unavailable equipment, equipment that isn't reservable, and equipment whose max reservation
             # length is less than the requested reservation length
             available_equipment = Equipment.objects.exclude(id__in=unavailable_equipment).exclude(
-                reservable=False).exclude(max_reservation_length__lt=reservation_length)
-            unavailable_equipment = Equipment.objects.filter(id__in=unavailable_equipment)
-            nonreservable_equipment = Equipment.objects.filter(reservable=False)
-            shorter_reservation_equipment = Equipment.objects.exclude(id__in=unavailable_equipment).filter(
-                reservable=True).filter(max_reservation_length__lt=reservation_length)
+                id__in=nopermissions_equipment).exclude(reservable=False).exclude(
+                max_reservation_length__lt=reservation_length)
+            unavailable_equipment = Equipment.objects.filter(id__in=unavailable_equipment).exclude(
+                id__in=nopermissions_equipment)
+            nonreservable_equipment = Equipment.objects.filter(reservable=False).exclude(id__in=nopermissions_equipment)
+            nopermissions_equipment = Equipment.objects.filter(id__in=nopermissions_equipment)
+            shorter_reservation_equipment = Equipment.objects.exclude(id__in=unavailable_equipment).exclude(
+                id__in=nopermissions_equipment).filter(reservable=True).filter(
+                max_reservation_length__lt=reservation_length)
 
             context = {'available_equipment': available_equipment, 'unavailable_equipment': unavailable_equipment,
                        'nonreservable_equipment': nonreservable_equipment,
-                       'shorter_reservation_equipment': shorter_reservation_equipment, 'start_date': start_date,
+                       'shorter_reservation_equipment': shorter_reservation_equipment,
+                       'nopermissions_equipment': nopermissions_equipment, 'start_date': start_date,
                        'end_date': end_date}
 
             return render(request, 'equipment/reserve/reserve_dates.html', context)
