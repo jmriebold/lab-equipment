@@ -15,7 +15,7 @@ def index(request):
     user = User.objects.get(username__exact=remote_user)
     status = Status.objects.get(user__exact=user)
 
-    if status.privileges_permanent < 4 and status.lab_membership is not 'n':
+    if status.privilege_level < 4 and status.lab_membership is not 'n':
         return render(request, 'equipment/index.html')
     else:
         return render(request, 'equipment/newuser.html')
