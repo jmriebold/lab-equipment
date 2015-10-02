@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Cancel Equipment Reservation{% endblock %}
+
+{% block primary %}
+
+    <center>
+    <p>Your reservation has been canceled.</p>
+
+{% endblock %}
+
+{% block returnlink %}
+    <hr>
+    <a href="{% url 'index' %}">back to Equipment Reservations main page</a>
+{% endblock %}

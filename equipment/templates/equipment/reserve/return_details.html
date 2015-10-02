@@ -30,7 +30,7 @@
         {% endfor %}
     </ul>
     <p>
-    <form action="{% url 'done' %}" onsubmit=getStatus() method="post" name="returnEquipment">
+    <form action="{% url 'returned' %}" onsubmit=getStatus() method="post" name="returnEquipment">
         {% csrf_token %}
         <input type="hidden" id="reservation_id" , name="reservation_id" value="{{ reservation.id }}">
         <input type="hidden" id="equip_status" name="equip_status" value="">

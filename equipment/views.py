@@ -227,7 +227,7 @@ def cancel_reservation(request):
         return render(request, 'equipment/index.html', {
             'error_message': "Invalid user! You can only cancel your own reservations."})
 
-    return your_reservations(request)
+    return render(request, 'equipment/reserve/canceled.html')
 
 
 def return_details(request):
@@ -267,7 +267,7 @@ def return_equipment(request):
     reservation.returned = True
     reservation.save()
 
-    return render(request, 'equipment/reserve/done.html')
+    return render(request, 'equipment/reserve/returned.html')
 
 
 def done(request):
