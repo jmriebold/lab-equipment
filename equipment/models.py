@@ -109,10 +109,6 @@ class Equipment(models.Model):
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name + ' (' + self.lab.replace('p', 'phonlab').replace('s', 'sociolab') + ')')
 
-        # Mark as not reservable if lost or broken
-        if self.status != 'ok':
-            self.reservable = False
-
         super(Equipment, self).save(*args, **kwargs)
 
         if self.image:

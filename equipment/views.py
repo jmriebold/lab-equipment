@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 
 from equipment.models import Status, Equipment, Reservation
+from utils import send_cancel_confirmation, send_return_confirmation, notify_labdirector
 
 
 def index(request):
@@ -238,6 +239,8 @@ def cancel_reservation(request):
 
     reservation = Reservation.objects.get(id=reservation_id)
 
+    send_cancel_confirmation(reservation)
+
     # Ensure owner of reservation is the one making the request
     if reservation.reserved_by == user:
         reservation.delete()
@@ -274,16 +277,24 @@ def return_equipment(request):
     equip_status = equip_status.split(',')
     equip_status = dict((item.split(':')[0], item.split(':')[1]) for item in equip_status)
 
-    # Save status of returned equipment
-    for equip_id in equip_status.keys():
-        equip = Equipment.objects.get(id=equip_id)
-        equip.status = equip_status[equip_id]
-        equip.save()
-
     # Mark reservation as returned
     reservation = Reservation.objects.get(id=reservation_id)
     reservation.returned = True
     reservation.save()
+
+    # Save status of returned equipment
+    for equip_id in equip_status.keys():
+        equip = Equipment.objects.get(id=equip_id)
+        equip.status = equip_status[equip_id]
+
+        # Mark as not reservable if lost or broken, notify lab director
+        if equip_status[equip_id] != 'ok':
+            equip.reservable = False
+            notify_labdirector(reservation, equip, equip_status[equip_id])
+
+        equip.save()
+
+    send_return_confirmation(reservation)
 
     return render(request, 'equipment/reserve/returned.html')
 

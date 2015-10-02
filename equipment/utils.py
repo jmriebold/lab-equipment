@@ -166,7 +166,8 @@ def get_details(reservation):
     email = reservation.reserved_by.email
     if email == '':
         email == str(reservation.reserved_by) + '@uw.edu'
-    equipment_list = ['%s (%s %s)' % (equip.name, equip.manufacturer, equip.model) for equip in reservation.equipment.all()]
+    equipment_list = ['%s (%s %s)' % (equip.name, equip.manufacturer, equip.model) for equip in
+                      reservation.equipment.all()]
     if len(equipment_list) > 1:
         equipment_list = ', '.join(equipment_list)
     else:
@@ -212,6 +213,50 @@ def send_confirmation(reservation):
         <p>Dear %s,<br>
            You have reserved %s from the %s from %s to %s.<br><br>
            For links to equipment manuals and guides, see the <a href="https://zeos.ling.washington.edu/equipment-reservations/equipment/all-equipment">equipment details page</a>.<br><br>
+           This is an automated email. If you have any questions or concerns, please contact the lab SA or the requisite lab director.
+        </p>
+      </body>
+    </html>
+    """ % (recipient, equipment, equip_lab, start_date, end_date)
+
+    send_email(email, subject, body)
+
+
+# Send a confirmation email on successful cancellation
+def send_cancel_confirmation(reservation):
+    recipient, email, equipment, equip_lab, start_date, end_date = get_details(reservation)
+
+    subject = 'Cancellation Confirmation'
+
+    # Create HTML message body
+    body = """\
+    <html>
+      <head></head>
+      <body>
+        <p>Dear %s,<br>
+           You have canceled your reservation of %s from the %s from %s to %s.<br><br>
+           This is an automated email. If you have any questions or concerns, please contact the lab SA or the requisite lab director.
+        </p>
+      </body>
+    </html>
+    """ % (recipient, equipment, equip_lab, start_date, end_date)
+
+    send_email(email, subject, body)
+
+
+# Send a confirmation email on successful return
+def send_return_confirmation(reservation):
+    recipient, email, equipment, equip_lab, start_date, end_date = get_details(reservation)
+
+    subject = 'Return Confirmation'
+
+    # Create HTML message body
+    body = """\
+    <html>
+      <head></head>
+      <body>
+        <p>Dear %s,<br>
+           You have successfully returned %s from the %s. If any equipment was marked lost or deleted, the appropriate lab director will be notified.<br><br>
            This is an automated email. If you have any questions or concerns, please contact the lab SA or the requisite lab director.
         </p>
       </body>
@@ -270,6 +315,11 @@ def send_return_reminder(reservation):
 def send_late_reminder(reservation):
     recipient, email, equipment, equip_lab, start_date, end_date = get_details(reservation)
 
+    if equip_lab == 'phonlab':
+        email = [email, 'rawright@uw.edu']
+    else:
+        email = [email, 'wassink@uw.edu']
+
     subject = 'Equipment Late'
 
     # Create HTML message body
@@ -284,5 +334,38 @@ def send_late_reminder(reservation):
       </body>
     </html>
     """ % (recipient, equipment, equip_lab)
+
+    send_email(email, subject, body)
+
+
+# Send notification about damaged/lost equipment
+def notify_labdirector(reservation, equipment, condition):
+    name = reservation.reserved_by.get_full_name()
+    if name == '':
+        name = str(reservation.reserved_by)
+    equip_lab = equipment.lab
+
+    condition = condition.replace('br', 'broken').replace('ls', 'lost')
+
+    subject = 'Equipment ' + condition
+
+    if equip_lab == 'p':
+        lab_director = 'Richard'
+        email = 'rawright@uw.edu'
+    else:
+        lab_director = 'Alicia'
+        email = 'wassink@uw.edu'
+
+    # Create HTML message body
+    body = """\
+    <html>
+      <head></head>
+      <body>
+        <p>Dear %s,<br>
+            %s has reported that %s has been %s.
+        </p>
+      </body>
+    </html>
+    """ % (lab_director, name, equipment, condition)
 
     send_email(email, subject, body)
