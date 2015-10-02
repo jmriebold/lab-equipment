@@ -67,10 +67,15 @@ def your_reservations(request):
     # Get past and current reservations, add returned reservations to past
     past_reservations = Reservation.objects.filter(reserved_by=user).filter(
         Q(end_date__lt=datetime.datetime.now()) | Q(returned=True)).order_by('start_date')
-    current_reservations = Reservation.objects.filter(reserved_by=user).exclude(
+    current_reservations = Reservation.objects.filter(reserved_by=user).filter(
+        start_date__lte=datetime.datetime.now()).exclude(
         end_date__lt=datetime.datetime.now()).exclude(returned=True).order_by('start_date')
+    upcoming_reservations = Reservation.objects.filter(reserved_by=user).filter(
+        start_date__gt=datetime.datetime.now()).exclude(
+        end_date__lt=datetime.datetime.now()).exclude().exclude(returned=True).order_by('start_date')
 
-    context = {'past_reservations': past_reservations, 'current_reservations': current_reservations}
+    context = {'past_reservations': past_reservations, 'current_reservations': current_reservations,
+               'upcoming_reservations': upcoming_reservations}
 
     return render(request, 'equipment/your-reservations.html', context)
 
