@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Return Equipment{% endblock %}
+
+{% block primary %}
+    <script language="JavaScript">
+        // Get status of each piece of equipment
+        function getStatus() {
+            var item = document.body.getElementsByTagName("select");
+            var equip_status = new Array();
+            for (var i = 0; i < item.length; i++) {
+                var s = item.item(i);
+                equip_status.push(s.id + ":" + s.options[s.selectedIndex].value);
+            }
+            equip_status = equip_status.join(',');
+            document.getElementById("equip_status").value = equip_status;
+        }
+    </script>
+
+    <p>Please confirm the condition of each piece of equipment you're returning.</p>
+    <ul>
+        {% for item in reservation.equipment.all %}
+            <li> <a href="{% url 'equip_detail' item.slug %}">{{ item.name }}</a>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <select id={{ item.id }}>
+                <option value="ok">OK</option>
+                <option value="br">broken</option>
+                <option value="ls">lost</option>
+            </select>
+        {% endfor %}
+    </ul>
+    <p>
+    <form action="{% url 'done' %}" onsubmit=getStatus() method="post" name="returnEquipment">
+        {% csrf_token %}
+        <input type="hidden" id="reservation_id" , name="reservation_id" value="{{ reservation.id }}">
+        <input type="hidden" id="equip_status" name="equip_status" value="">
+        <input type="submit" value="Confirm Return">
+    </form>
+{% endblock %}
+
+{% block returnlink %}
+    <hr>
+    <a href="{% url 'index' %}">back to Equipment Reservations main page</a>
+{% endblock %}

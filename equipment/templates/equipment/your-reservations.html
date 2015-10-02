@@ -11,7 +11,7 @@
             from {{ reservation.start_date }} to {{ reservation.end_date }} for the following equipment:
             <ul>
                 {% for equipment_piece in reservation.equipment.all %}
-                    <li> <a href="{% url 'equip_detail' equipment_piece.slug %}">{{ equipment_piece.name }}</a>
+                    <li> <a href="{% url 'equip_detail' equipment_piece.slug %}">{{ equipment_piece.name }} ({{ equipment_piece.lab }})</a>
                 {% endfor %}
             </ul>
             <p>
@@ -38,6 +38,13 @@
                 <input type="hidden" name="reservation_end_date" value="{{ reservation.end_date }}">
                 <input type="submit" value="Cancel Reservation">
             </form>
+            <br>
+            <form action="{% url 'return_details' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="reservation_id" value="{{ reservation.id }}">
+                <input type="submit" value="Return Equipment">
+            </form>
+            <br>
         {% endfor %}
     {% else %}
         <p>No current reservations.</p>

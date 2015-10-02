@@ -4,8 +4,9 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
+from django.db.models import Q
 
-from equipment.models import Equipment, Reservation
+from equipment.models import Status, Equipment, Reservation
 
 
 def index(request):
@@ -56,10 +57,12 @@ def your_reservations(request):
     remote_user = request.environ.get('REMOTE_USER')
     user = User.objects.get(username__exact=remote_user)
 
+    # Get past and current reservations, add returned reservations to past
     past_reservations = Reservation.objects.filter(reserved_by=user).filter(
-        end_date__lt=datetime.datetime.now()).order_by('start_date')
+        Q(end_date__lt=datetime.datetime.now()) | Q(returned=True)).order_by('start_date')
     current_reservations = Reservation.objects.filter(reserved_by=user).exclude(
-        end_date__lt=datetime.datetime.now()).order_by('start_date')
+        end_date__lt=datetime.datetime.now()).exclude(returned=True).order_by('start_date')
+
     context = {'past_reservations': past_reservations, 'current_reservations': current_reservations}
 
     return render(request, 'equipment/your-reservations.html', context)
@@ -102,6 +105,15 @@ def reserve_dates(request, start_date, end_date):
             for reservation in conflicting_reservations:
                 for equipment in reservation.equipment.all():
                     unavailable_equipment.add(equipment.id)
+
+            # Add equipment not reservable due to permissions
+            remote_user = request.environ.get('REMOTE_USER')
+            user = User.objects.get(username__exact=remote_user)
+            status = Status.objects.get(user__exact=user)
+
+            for equip in Equipment.objects.all():
+                if status.privilege_level > equip.privilege_level or status.lab_membership not in [equip.lab, 'b']:
+                    unavailable_equipment.add(equip.id)
 
             # exclude unavailable equipment, equipment that isn't reservable, and equipment whose max reservation
             # length is less than the requested reservation length
@@ -213,9 +225,49 @@ def cancel_reservation(request):
         reservation.delete()
     else:
         return render(request, 'equipment/index.html', {
-                'error_message': "Invalid user! You can only cancel your own reservations."})
+            'error_message': "Invalid user! You can only cancel your own reservations."})
 
     return your_reservations(request)
+
+
+def return_details(request):
+    reservation_id = request.POST['reservation_id']
+
+    remote_user = request.environ.get('REMOTE_USER')
+    user = User.objects.get(username__exact=remote_user)
+
+    reservation = Reservation.objects.get(id=reservation_id)
+
+    # Ensure owner of reservation is the one making the request
+    if reservation.reserved_by != user:
+        return render(request, 'equipment/index.html', {
+            'error_message': "Invalid user! You can only return your own reservations."})
+
+    context = {'reservation': reservation}
+
+    return render(request, 'equipment/reserve/return_details.html', context)
+
+
+def return_equipment(request):
+    reservation_id = request.POST['reservation_id']
+    equip_status = request.POST['equip_status']
+
+    # Split into dict of equip ID and status
+    equip_status = equip_status.split(',')
+    equip_status = dict((item.split(':')[0], item.split(':')[1]) for item in equip_status)
+
+    # Save status of returned equipment
+    for equip_id in equip_status.keys():
+        equip = Equipment.objects.get(id=equip_id)
+        equip.status = equip_status[equip_id]
+        equip.save()
+
+    # Mark reservation as returned
+    reservation = Reservation.objects.get(id=reservation_id)
+    reservation.returned = True
+    reservation.save()
+
+    return render(request, 'equipment/reserve/done.html')
 
 
 def done(request):
