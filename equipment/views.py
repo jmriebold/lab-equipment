@@ -10,7 +10,14 @@ from equipment.models import Status, Equipment, Reservation
 
 
 def index(request):
-    return render(request, 'equipment/index.html')
+    remote_user = request.environ.get('REMOTE_USER')
+    user = User.objects.get(username__exact=remote_user)
+    status = Status.objects.get(user__exact=user)
+
+    if status.privileges_permanent < 4 and status.lab_membership is not 'n':
+        return render(request, 'equipment/index.html')
+    else:
+        return render(request, 'equipment/newuser.html')
 
 
 # List all equipment
