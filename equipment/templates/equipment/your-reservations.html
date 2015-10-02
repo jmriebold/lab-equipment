@@ -7,7 +7,7 @@
     <p><b>Past Reservations</b></p>
     {% if past_reservations %}
         {% for reservation in past_reservations %}
-            You have a reservation
+            You had a reservation
             from {{ reservation.start_date }} to {{ reservation.end_date }} for the following equipment:
             <ul>
                 {% for equipment_piece in reservation.equipment.all %}
