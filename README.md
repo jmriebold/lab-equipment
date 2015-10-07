@@ -37,6 +37,9 @@ If you've modified database fields, this will prompt you for how to migrate exis
 * To add equipment, modify user permissions, and other tasks, do so via the [admin site](https://zeos.ling.washington.edu/equipment-reservations/admin/).
 * Restrictions on reservations (e.g. maximum length, permissions) can be overridden by an admin via the [admin site](https://zeos.ling.washington.edu/equipment-reservations/admin/).
 * <b>Important:</b> After changing views, models, or other configuration files, execute <code>touch lab_equipment/lab_equipment/wsgi.py</code> to trigger a reload of the server.
+* Two custom commands have been added to the Django project (callable via manage.py, but normally run on a schedule with cron): removetempusers and sendreminders.
+  * removetempusers resets the permissions of users with temporary accounts once their expiry date has passed.
+  * sendreminders sends checkout/return/late reminders for current reservations.
 
 ## Maintenance
 * Although user accounts are created automatically, the default lab membership is "neither", and the default permission level is "none", to ensure new users can't simply log on to the site and immediately check out equipment without first being cleared by a lab director. Once a new user has been cleared for use of the site, they must have their permissions set via the [admin site](https://zeos.ling.washington.edu/equipment-reservations/admin/). To do so, edit the user, and add the required lab membership and privileges near the bottom of the page.
