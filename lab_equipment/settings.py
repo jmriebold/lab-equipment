@@ -17,13 +17,18 @@ TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
+with open('/home/calendar/secret_key.txt', 'r') as f:
+    key = f.readline()
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'j6+tsh)mcb^9v8*vy!emp-zxe$psv+*i5$hd@2o5%r^eg$l=z5'
+SECRET_KEY = key
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-TEMPLATE_DEBUG = True
+TEMPLATE_DEBUG = False
+
+ADMINS = ('John', 'riebold@uw.edu')
 
 ALLOWED_HOSTS = ['zeos.ling.washington.edu']
 
