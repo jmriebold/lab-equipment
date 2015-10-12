@@ -102,11 +102,12 @@ def reserve_dates(request, start_date, end_date):
         hour, minute = [int(x) for x in end_time.split(':')]
         end_datetime = datetime.datetime(year, month, day, hour, minute)
 
-        # calculate reservation length in hours
+        # calculate reservation length in hours and minutes
         reservation_length = end_datetime - start_datetime
-        reservation_length = reservation_length.seconds / 60 / 60 + reservation_length.days * 24
+        reservation_minutes = reservation_length.seconds / 60 + reservation_length.days * 1440
+        reservation_hours = reservation_length.seconds / 60 / 60 + reservation_length.days * 24
 
-        if not reservation_length > 0:
+        if not reservation_minutes > 0:
             return render(request, 'equipment/reserve/index.html', {
                 'error_message': "Invalid time span! Please enter an end date that is after your start date."})
         else:
@@ -133,14 +134,14 @@ def reserve_dates(request, start_date, end_date):
             # length is less than the requested reservation length
             available_equipment = Equipment.objects.exclude(id__in=unavailable_equipment).exclude(
                 id__in=nopermissions_equipment).exclude(reservable=False).exclude(
-                max_reservation_length__lt=reservation_length)
+                max_reservation_length__lt=reservation_hours)
             unavailable_equipment = Equipment.objects.filter(id__in=unavailable_equipment).exclude(
                 id__in=nopermissions_equipment)
             nonreservable_equipment = Equipment.objects.filter(reservable=False).exclude(id__in=nopermissions_equipment)
             nopermissions_equipment = Equipment.objects.filter(id__in=nopermissions_equipment)
             shorter_reservation_equipment = Equipment.objects.exclude(id__in=unavailable_equipment).exclude(
                 id__in=nopermissions_equipment).filter(reservable=True).filter(
-                max_reservation_length__lt=reservation_length)
+                max_reservation_length__lt=reservation_hours)
 
             context = {'available_equipment': available_equipment, 'unavailable_equipment': unavailable_equipment,
                        'nonreservable_equipment': nonreservable_equipment,
