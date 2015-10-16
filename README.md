@@ -10,7 +10,7 @@ an equipment reservation system for the University of Washington Phonetics and S
 # Functionality
 * The lab equipment reservation system (LERS) includes a listing of all lab equipment, including the locations, links to manuals and wiki guides, indicators for the condition (e.g. "ok", "broken", "lost"), whether it is reservable or not.
 * Google Calendar events will automatically be created on the appropriate calendar (or Misc if there is none) so that it’s easier to see at a glance what's been checked out. 
-* Confirmation emails will also be sent upon making a reservation, canceling a reservation, or returning a piece of equipment, and reminder emails will be sent leading up to a reservation or return, or when a piece of equipment has not been returned.
+* Confirmation emails will also be sent upon making a reservation, canceling a reservation, or returning a piece of equipment, and reminder emails will be sent leading up to a reservation or return, or when a piece of equipment has not been returned. Note that return reminder emails will not be sent for reservations that begin and end on the same day.
 * A number of restrictions govern who can make reservations and how they are allowed to be made. Each user and each piece of equipment is assigned a lab and a permission level (ranging from "none" to "lab director"). All equipment has a maximum reservation time, and reservations must be made at least 24 hours in advance. These restrictions can be overridden by lab directors and staff.
 
 
