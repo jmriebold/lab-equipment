@@ -261,7 +261,7 @@ def send_return_confirmation(reservation):
         </p>
       </body>
     </html>
-    """ % (recipient, equipment, equip_lab, start_date, end_date)
+    """ % (recipient, equipment, equip_lab)
 
     send_email(email, subject, body)
 
