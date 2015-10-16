@@ -66,11 +66,10 @@ def your_reservations(request):
     user = User.objects.get(username__exact=remote_user)
 
     # Get past and current reservations, add returned reservations to past
-    past_reservations = Reservation.objects.filter(reserved_by=user).filter(
-        Q(end_date__lt=datetime.datetime.now()) | Q(returned=True)).order_by('start_date')
+    past_reservations = Reservation.objects.filter(reserved_by=user).filter(end_date__lt=datetime.datetime.now()).filter(returned=True).order_by('start_date')
     current_reservations = Reservation.objects.filter(reserved_by=user).filter(
-        start_date__lte=datetime.datetime.now()).exclude(
-        end_date__lt=datetime.datetime.now()).exclude(returned=True).order_by('start_date')
+        start_date__lte=datetime.datetime.now()).filter(
+        Q(end_date__gte=datetime.datetime.now()) | Q(returned=False)).order_by('start_date')
     upcoming_reservations = Reservation.objects.filter(reserved_by=user).filter(
         start_date__gt=datetime.datetime.now()).exclude(
         end_date__lt=datetime.datetime.now()).exclude().exclude(returned=True).order_by('start_date')
