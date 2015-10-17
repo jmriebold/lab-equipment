@@ -6,10 +6,17 @@
 
     <script language="JavaScript">
         function AccessDates() {
-            var StartDate = document.getElementById('startDate').value;
-            var EndDate = document.getElementById('endDate').value;
+            var StartDate = document.getElementById('startDate').value.toString();
+            var EndDate = document.getElementById('endDate').value.toString();
+
+            // Reformat dates inputted via dtpicker.js
+            if (StartDate.indexOf(" ") > -1) {
+                StartDate = StartDate.replace(" ", "T");
+                EndDate = EndDate.replace(" ", "T");
+            }
+
             if (StartDate != '' && EndDate != '') {
-                var url_mask = "{% url 'reserve_dates' start_date='1234T56' end_date='2345T67' %}".replace(/1234T56/, StartDate.toString()).replace(/2345T67/, EndDate.toString());
+                var url_mask = "{% url 'reserve_dates' start_date='1234T56' end_date='2345T67' %}".replace(/1234T56/, StartDate).replace(/2345T67/, EndDate);
                 window.location.href = url_mask;
             }
         }
@@ -28,6 +35,20 @@
             <button id="submit" onclick="AccessDates()">Submit</button>
         </p>
     </center>
+
+    <script>
+        // Check for browser support for datetime picker
+        yepnope({
+            test: Modernizr.inputtypes.date,
+            nope: ['/static/admin/js/jquery.min.js', '/static/template/jquery.simple-dtpicker.js', '/static/template/jquery.simple-dtpicker.css'],
+            complete: function () {
+                $('input[type=datetime-local]').appendDtpicker({
+                    'closeOnSelected': true,
+                    'futureOnly': true
+                });
+            }
+        });
+    </script>
 {% endblock %}
 
 {% block returnlink %}
