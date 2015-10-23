@@ -182,7 +182,7 @@ def send_email(recipient, subject, body):
     message = MIMEMultipart('alternative')
     message['Subject'] = subject
     message['From'] = 'UW Linguistics Equipment Checkout'
-    message['To'] = recipient
+    message['To'] = ', '.join(recipient)
     body = MIMEText(body, 'html')
     message.attach(body)
 
@@ -219,7 +219,7 @@ def send_confirmation(reservation):
     </html>
     """ % (recipient, equipment, equip_lab, start_date, end_date)
 
-    send_email(email, subject, body)
+    send_email([email], subject, body)
 
 
 # Send a confirmation email on successful cancellation
@@ -241,7 +241,7 @@ def send_cancel_confirmation(reservation):
     </html>
     """ % (recipient, equipment, equip_lab, start_date, end_date)
 
-    send_email(email, subject, body)
+    send_email([email], subject, body)
 
 
 # Send a confirmation email on successful return
@@ -263,7 +263,7 @@ def send_return_confirmation(reservation):
     </html>
     """ % (recipient, equipment, equip_lab)
 
-    send_email(email, subject, body)
+    send_email([email], subject, body)
 
 
 # Send a reminder email for upcoming reservations
@@ -286,7 +286,7 @@ def send_checkout_reminder(reservation):
     </html>
     """ % (recipient, equipment, equip_lab, start_date, end_date)
 
-    send_email(email, subject, body)
+    send_email([email], subject, body)
 
 
 # Send a reminder email for upcoming returns
@@ -308,7 +308,7 @@ def send_return_reminder(reservation):
     </html>
     """ % (recipient, equipment, equip_lab)
 
-    send_email(email, subject, body)
+    send_email([email], subject, body)
 
 
 # Send a reminder email for upcoming returns
@@ -366,6 +366,6 @@ def notify_labdirector(reservation, equipment, condition):
         </p>
       </body>
     </html>
-    """ % (lab_director, name, equipment, condition)
+    """ % ([lab_director], name, equipment, condition)
 
     send_email(email, subject, body)
